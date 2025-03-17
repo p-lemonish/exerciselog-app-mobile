@@ -5,6 +5,7 @@ interface AuthContextType {
     token: string | null;
     username: string | null;
     isAuthenticated: boolean;
+    isLoading: boolean;
     login: (username: string, token: string) => Promise<void>;
     logout: () => Promise<void>;
     restoreToken: () => Promise<void>;
@@ -24,6 +25,10 @@ async function storeToken(username: string, token: string) {
 
 async function retrieveToken(): Promise<{ username: string; token: string; } | null> {
     try {
+        if (!Keychain || !Keychain.getGenericPassword) {
+            console.warn('Keychain module not available');
+            return null;
+        }
         const credentials = await Keychain.getGenericPassword();
         return credentials ? { username: credentials.username, token: credentials.password } : null;
     } catch (error) {
@@ -43,7 +48,7 @@ async function removeToken() {
 export const AuthProvider = ({ children }: { children: ReactNode; }) => {
     const [token, setToken] = useState<string | null>(null);
     const [username, setUsername] = useState<string | null>(null);
-    const isAuthenticated = !!token;
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const login = async (username: string, token: string) => {
         await storeToken(username, token);
@@ -63,15 +68,25 @@ export const AuthProvider = ({ children }: { children: ReactNode; }) => {
             setUsername(stored.username);
             setToken(stored.token);
         }
+        setIsLoading(false);
     };
 
     useEffect(() => {
         restoreToken();
     }, []);
 
+    const isAuthenticated = !!token;
+
+    const contextValue = useMemo(
+        () => ({ token, username, isAuthenticated, isLoading, login, logout, restoreToken }),
+        [token, username, isAuthenticated, isLoading]
+    );
+
     return (
-        <AuthContext.Provider value={{ username, token, isAuthenticated, login, logout, restoreToken }}>
+        <AuthContext.Provider value={contextValue}>
             {children}
         </AuthContext.Provider>
     );
 };
+
+export default AuthProvider;
