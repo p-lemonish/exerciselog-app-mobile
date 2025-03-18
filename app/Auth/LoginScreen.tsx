@@ -13,15 +13,15 @@ export const LoginScreen = () => {
     const baseURL = process.env.EXPO_PUBLIC_API_BASE_URL;
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-    // TODO: handleLogin has some issue. We get 200OK from backend
-    //  (NOBRIDGE) ERROR  Error retrieving token: [TypeError: Cannot read property 'getGenericPasswordForOptions' of null] [Component Stack]
     const handleLogin = async () => {
         const response = await axios.post(`${baseURL}/login`, { username, password });
-        const data = await response.data();
-
+        const data = response.data;
         console.log(data);
+
         if (response.status === 200 && data.jwt) {
+            console.log(data.jwt);
             authContext?.login(username, data.jwt);
+            Alert.alert('Login Success!', data.message);
             navigation.navigate('Home');
         } else {
             Alert.alert('Login Failed', data.message || 'Please check your credentials.');
