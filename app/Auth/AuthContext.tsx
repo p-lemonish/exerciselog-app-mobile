@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, ReactNode, useMemo } from 'react';
-import * as Keychain from 'react-native-keychain';
+import * as SecureStore from 'expo-secure-store';
 
 interface AuthContextType {
     token: string | null;
@@ -13,10 +13,13 @@ interface AuthContextType {
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const AUTH_KEY = 'auth';
+
 async function storeToken(username: string, token: string) {
     try {
-        await Keychain.setGenericPassword(username, token, {
-            accessible: Keychain.ACCESSIBLE.WHEN_UNLOCKED,
+        const value = JSON.stringify({ username, token });
+        await SecureStore.setItemAsync(AUTH_KEY, value, {
+            keychainAccessible: SecureStore.AFTER_FIRST_UNLOCK,
         });
     } catch (error) {
         console.error("Error storing token:", error);
@@ -25,12 +28,8 @@ async function storeToken(username: string, token: string) {
 
 async function retrieveToken(): Promise<{ username: string; token: string; } | null> {
     try {
-        if (!Keychain || !Keychain.getGenericPassword) {
-            console.warn('Keychain module not available');
-            return null;
-        }
-        const credentials = await Keychain.getGenericPassword();
-        return credentials ? { username: credentials.username, token: credentials.password } : null;
+        const stored = await SecureStore.getItemAsync(AUTH_KEY);
+        return stored ? JSON.parse(stored) : null;
     } catch (error) {
         console.error("Error retrieving token:", error);
         return null;
@@ -39,7 +38,7 @@ async function retrieveToken(): Promise<{ username: string; token: string; } | n
 
 async function removeToken() {
     try {
-        await Keychain.resetGenericPassword();
+        await SecureStore.deleteItemAsync(AUTH_KEY);
     } catch (error) {
         console.error("Error removing token:", error);
     }
@@ -90,3 +89,4 @@ export const AuthProvider = ({ children }: { children: ReactNode; }) => {
 };
 
 export default AuthProvider;
+
