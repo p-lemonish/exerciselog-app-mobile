@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, ReactNode, useMemo } from 'react';
 import * as SecureStore from 'expo-secure-store';
+import { setAuthToken } from '../Service/api';
 
 interface AuthContextType {
     token: string | null;
@@ -73,6 +74,10 @@ export const AuthProvider = ({ children }: { children: ReactNode; }) => {
     useEffect(() => {
         restoreToken();
     }, []);
+
+    useEffect(() => {
+        setAuthToken(token);
+    }, [token]);
 
     const isAuthenticated = !!token;
 

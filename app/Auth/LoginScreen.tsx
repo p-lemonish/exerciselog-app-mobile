@@ -16,10 +16,8 @@ export const LoginScreen = () => {
     const handleLogin = async () => {
         const response = await axios.post(`${baseURL}/login`, { username, password });
         const data = response.data;
-        console.log(data);
 
         if (response.status === 200 && data.jwt) {
-            console.log(data.jwt);
             authContext?.login(username, data.jwt);
             Alert.alert('Login Success!', data.message);
             navigation.navigate('Home');
