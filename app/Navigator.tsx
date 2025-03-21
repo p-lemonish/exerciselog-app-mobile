@@ -42,7 +42,7 @@ const AppNavigator = () => {
             <Stack.Screen
                 name="CreateExercise"
                 component={CreateExercise}
-                options={{ title: 'CreateExercise' }}
+                options={{ title: 'Create & Plan Your Exercise' }}
             />
             <Stack.Screen
                 name="PlanWorkout"
