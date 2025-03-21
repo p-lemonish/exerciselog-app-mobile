@@ -13,6 +13,7 @@ import api from '../Service/api';
 import { AuthContext } from '../Auth/AuthContext';
 
 interface Exercise {
+    id: number;
     exerciseName: string;
     plannedSets: number;
     plannedReps: number;
@@ -30,6 +31,7 @@ const commonExercises = [
 
 const CreateExercise = ({ navigation }: any) => {
     const [exercise, setExercise] = useState<Exercise>({
+        id: 0,
         exerciseName: '',
         plannedSets: 3,
         plannedReps: 5,
@@ -37,34 +39,30 @@ const CreateExercise = ({ navigation }: any) => {
         notes: '',
     });
 
-    const [userExercises, setUserExercises] = useState<{ exerciseName: string; }[]>([]);
+    const [userExercises, setUserExercises] = useState<Exercise[]>([]);
     const [exerciseNames, setExerciseNames] = useState<string[]>([]);
+    const [deletionMode, setDeletionMode] = useState(false);
+    const [selectedForDeletion, setSelectedForDeletion] = useState<number[]>([]);
     const authContext = useContext(AuthContext);
 
     useEffect(() => {
         const getUserExercises = async () => {
             try {
                 const response = await api.get('/planned');
+                const exercises: Exercise[] = response.data;
+                setUserExercises(exercises);
                 const uniqueNames: string[] = Array.from(
                     new Set(
-                        response.data
+                        exercises
                             .map((exercise: any) => exercise.exerciseName)
                             .filter((name: string) => name != null)
                     ),
                 );
                 setExerciseNames(uniqueNames);
-
-                console.log(response);
-                const userExerciseNames = response.data.map((exercise: any) => {
-                    exercise.exerciseName;
-                });
-                console.log(userExerciseNames);
-                setUserExercises(userExerciseNames);
             } catch (error) {
                 Alert.alert('Error', 'Failed to fetch your existing exercises.');
             }
         };
-
         if (!authContext?.isLoading) {
             getUserExercises();
         }
@@ -82,6 +80,7 @@ const CreateExercise = ({ navigation }: any) => {
                 `Exercise "${exercise.exerciseName}" with ${exercise.plannedSets} sets, ${exercise.plannedReps} reps at ${exercise.plannedWeight}kg has been saved.`
             );
             setExercise({
+                id: 0,
                 exerciseName: '',
                 plannedSets: 3,
                 plannedReps: 5,
@@ -106,6 +105,35 @@ const CreateExercise = ({ navigation }: any) => {
         setExercise((prev) => ({ ...prev, [field]: value }));
     };
 
+    const toggleDeletionMode = () => {
+        setDeletionMode((prev) => !prev);
+        setSelectedForDeletion([]);
+    };
+
+    const toggleSelection = (id: number) => {
+        if (selectedForDeletion.includes(id)) {
+            setSelectedForDeletion(selectedForDeletion.filter((x) => x !== id));
+        } else {
+            setSelectedForDeletion([...selectedForDeletion, id]);
+        }
+    };
+
+    //TODO before handleDeleteSome do check if any exercise belongs to a workout, 
+    //ask if user wants to remove exercise from the workout too Y -> proceed.
+    const handleDeleteSome = async () => {
+        for (const id of selectedForDeletion) {
+            try {
+                await api.delete(`/planned/${id}`);
+                setUserExercises((prev) => prev.filter((ex) => ex.id !== id));
+            } catch (error) {
+                Alert.alert('Error', `Failed to delete exercise with id ${id}`);
+            }
+        }
+        setExerciseNames(userExercises.filter(ex => !selectedForDeletion.includes(ex.id)).map((ex) => ex.exerciseName));
+        setSelectedForDeletion([]);
+        setDeletionMode(false);
+    };
+
     const exerciseOptions = [
         ...new Set(
             [...exerciseNames, ...commonExercises]
@@ -113,11 +141,8 @@ const CreateExercise = ({ navigation }: any) => {
                 .filter((name) => name != null)
         ),
     ];
-
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Create Exercise</Text>
-
             <Text style={styles.label}>Exercise Name</Text>
             <TextInput
                 style={styles.input}
@@ -125,8 +150,49 @@ const CreateExercise = ({ navigation }: any) => {
                 value={exercise.exerciseName}
                 onChangeText={(text) => updateExercise('exerciseName', text)}
             />
-
             <Text style={styles.subTitle}>Or choose from your exercises & common ones:</Text>
+
+            {userExercises.length > 0 && (
+                <View>
+                    <View style={styles.deletionHeader}>
+                        <Button
+                            title={deletionMode ? 'Cancel Edit' : 'Edit'}
+                            onPress={toggleDeletionMode}
+                        />
+                        {deletionMode && selectedForDeletion.length > 0 && (
+                            <Button title="Delete" onPress={handleDeleteSome} color="#ff5c5c" />
+                        )}
+                    </View>
+
+                    {deletionMode && (
+                        <View style={styles.blobContainer}>
+                            {userExercises.map((ex) => (
+                                <TouchableOpacity
+                                    key={ex.id}
+                                    style={[
+                                        styles.blob,
+                                        selectedForDeletion.includes(ex.id) && styles.blobSelected,
+                                    ]}
+                                    onPress={() => toggleSelection(ex.id)}
+                                >
+                                    <Text
+                                        style={[
+                                            styles.blobText,
+                                            selectedForDeletion.includes(ex.id) && styles.blobTextSelected,
+                                        ]}
+                                    >
+                                        {`${ex.exerciseName} ${ex.plannedSets}x${ex.plannedReps}@${ex.plannedWeight}kg`}
+                                    </Text>
+                                    {selectedForDeletion.includes(ex.id) && (
+                                        <Text style={styles.checkbox}>✓</Text>
+                                    )}
+                                </TouchableOpacity>
+                            ))}
+                        </View>
+                    )}
+                </View>
+            )}
+
             <View style={styles.blobContainer}>
                 {exerciseOptions.map((name) => (
                     <TouchableOpacity
@@ -148,12 +214,11 @@ const CreateExercise = ({ navigation }: any) => {
                     </TouchableOpacity>
                 ))}
             </View>
-
             <Text style={styles.label}>Planned Sets: {exercise.plannedSets}</Text>
             <Slider
                 style={styles.slider}
-                minimumValue={3}
-                maximumValue={6}
+                minimumValue={1}
+                maximumValue={10}
                 step={1}
                 value={exercise.plannedSets}
                 onValueChange={(value) => updateExercise('plannedSets', value)}
@@ -162,19 +227,13 @@ const CreateExercise = ({ navigation }: any) => {
                 <Button
                     title="-"
                     onPress={() =>
-                        updateExercise(
-                            'plannedSets',
-                            Math.max(0, exercise.plannedSets - 1)
-                        )
+                        updateExercise('plannedSets', Math.max(1, exercise.plannedSets - 1))
                     }
                 />
                 <Button
                     title="+"
                     onPress={() =>
-                        updateExercise(
-                            'plannedSets',
-                            exercise.plannedSets + 1
-                        )
+                        updateExercise('plannedSets', exercise.plannedSets + 1)
                     }
                 />
             </View>
@@ -182,7 +241,7 @@ const CreateExercise = ({ navigation }: any) => {
             <Text style={styles.label}>Planned Reps: {exercise.plannedReps}</Text>
             <Slider
                 style={styles.slider}
-                minimumValue={5}
+                minimumValue={1}
                 maximumValue={30}
                 step={1}
                 value={exercise.plannedReps}
@@ -192,37 +251,25 @@ const CreateExercise = ({ navigation }: any) => {
                 <Button
                     title="-5"
                     onPress={() =>
-                        updateExercise(
-                            'plannedReps',
-                            Math.max(0, exercise.plannedReps - 5)
-                        )
+                        updateExercise('plannedReps', Math.max(1, exercise.plannedReps - 5))
                     }
                 />
                 <Button
                     title="-"
                     onPress={() =>
-                        updateExercise(
-                            'plannedReps',
-                            Math.max(0, exercise.plannedReps - 1)
-                        )
+                        updateExercise('plannedReps', Math.max(1, exercise.plannedReps - 1))
                     }
                 />
                 <Button
                     title="+"
                     onPress={() =>
-                        updateExercise(
-                            'plannedReps',
-                            exercise.plannedReps + 1
-                        )
+                        updateExercise('plannedReps', exercise.plannedReps + 1)
                     }
                 />
                 <Button
                     title="+5"
                     onPress={() =>
-                        updateExercise(
-                            'plannedReps',
-                            exercise.plannedReps + 5
-                        )
+                        updateExercise('plannedReps', exercise.plannedReps + 5)
                     }
                 />
             </View>
@@ -231,7 +278,7 @@ const CreateExercise = ({ navigation }: any) => {
             <Slider
                 style={styles.slider}
                 minimumValue={0}
-                maximumValue={100}
+                maximumValue={200}
                 step={1}
                 value={exercise.plannedWeight}
                 onValueChange={(value) => updateExercise('plannedWeight', value)}
@@ -240,55 +287,37 @@ const CreateExercise = ({ navigation }: any) => {
                 <Button
                     title="-20"
                     onPress={() =>
-                        updateExercise(
-                            'plannedWeight',
-                            Math.max(0, exercise.plannedWeight - 20)
-                        )
+                        updateExercise('plannedWeight', Math.max(0, exercise.plannedWeight - 20))
                     }
                 />
                 <Button
                     title="-5"
                     onPress={() =>
-                        updateExercise(
-                            'plannedWeight',
-                            Math.max(0, exercise.plannedWeight - 5)
-                        )
+                        updateExercise('plannedWeight', Math.max(0, exercise.plannedWeight - 5))
                     }
                 />
                 <Button
                     title="-0.5"
                     onPress={() =>
-                        updateExercise(
-                            'plannedWeight',
-                            Math.max(0, exercise.plannedWeight - 0.5)
-                        )
+                        updateExercise('plannedWeight', Math.max(0, exercise.plannedWeight - 0.5))
                     }
                 />
                 <Button
                     title="+0.5"
                     onPress={() =>
-                        updateExercise(
-                            'plannedWeight',
-                            exercise.plannedWeight + 0.5
-                        )
+                        updateExercise('plannedWeight', exercise.plannedWeight + 0.5)
                     }
                 />
                 <Button
                     title="+5"
                     onPress={() =>
-                        updateExercise(
-                            'plannedWeight',
-                            exercise.plannedWeight + 5
-                        )
+                        updateExercise('plannedWeight', exercise.plannedWeight + 5)
                     }
                 />
                 <Button
                     title="+20"
                     onPress={() =>
-                        updateExercise(
-                            'plannedWeight',
-                            exercise.plannedWeight + 20
-                        )
+                        updateExercise('plannedWeight', exercise.plannedWeight + 20)
                     }
                 />
             </View>
@@ -365,7 +394,24 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         marginTop: 20,
     },
+    deletionHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 10,
+    },
+    checkbox: {
+        backgroundColor: '#007bff',
+        color: '#fff',
+        borderRadius: 10,
+        paddingHorizontal: 4,
+        paddingVertical: 2,
+        fontWeight: 'bold',
+        fontSize: 12,
+        position: 'absolute',
+        top: 2,
+        right: 2,
+    },
 });
 
 export default CreateExercise;
-
