@@ -1,15 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     View,
     Text,
     TextInput,
     TouchableOpacity,
     Button,
-    StyleSheet,
     Alert,
+    StyleSheet,
     ScrollView,
 } from 'react-native';
 import api from '../Service/api';
+
+interface Workout {
+    id: number;
+    workoutName: string;
+    workoutNotes: string;
+    selectedExerciseIds: number[];
+}
 
 interface Exercise {
     id: number;
@@ -20,16 +27,13 @@ interface Exercise {
     notes: string;
 }
 
-interface WorkoutDto {
-    workoutName: string;
-    workoutNotes: string;
-    selectedExerciseIds: number[];
-}
+const EditWorkout = ({ navigation, route }: any) => {
+    const { workout } = route.params as { workout: Workout; };
 
-const PlanWorkout = ({ navigation }: any) => {
-    const [workoutName, setWorkoutName] = useState('');
-    const [workoutNotes, setWorkoutNotes] = useState('');
-    const [selectedExerciseIds, setSelectedExerciseIds] = useState<number[]>([]);
+    const id = workout.id;
+    const [workoutName, setWorkoutName] = useState(workout.workoutName);
+    const [workoutNotes, setWorkoutNotes] = useState(workout.workoutNotes);
+    const [selectedExerciseIds, setSelectedExerciseIds] = useState<number[]>(workout.selectedExerciseIds);
     const [plannedExercises, setPlannedExercises] = useState<Exercise[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -55,7 +59,7 @@ const PlanWorkout = ({ navigation }: any) => {
         }
     };
 
-    const handleSaveWorkout = async () => {
+    const handleSaveChanges = async () => {
         if (!workoutName.trim()) {
             Alert.alert('Validation', 'Workout must have a name.');
             return;
@@ -64,24 +68,18 @@ const PlanWorkout = ({ navigation }: any) => {
             Alert.alert('Validation', 'Select at least one exercise.');
             return;
         }
-
-        const payload: WorkoutDto = {
-            workoutName,
-            workoutNotes,
-            selectedExerciseIds,
-        };
-
         try {
-            await api.post('/workouts', payload);
-            Alert.alert('Success', 'Workout saved successfully.');
-            setWorkoutName('');
-            setWorkoutNotes('');
-            setSelectedExerciseIds([]);
-            if (navigation) {
-                navigation.goBack();
-            }
+            const payload = {
+                id,
+                workoutName,
+                workoutNotes,
+                selectedExerciseIds,
+            };
+            await api.put(`/workouts/${id}`, payload);
+            Alert.alert('Success', 'Workout updated successfully.');
+            navigation.navigate('WorkoutList');
         } catch (error) {
-            Alert.alert('Error', 'Failed to save workout.');
+            Alert.alert('Error', 'Failed to update workout.');
         }
     };
 
@@ -95,25 +93,22 @@ const PlanWorkout = ({ navigation }: any) => {
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
-            <Text style={styles.title}>Plan Your Workout</Text>
-
+            <Text style={styles.title}>Edit Workout</Text>
             <Text style={styles.label}>Workout Name</Text>
             <TextInput
                 style={styles.input}
-                placeholder="Enter workout name"
                 value={workoutName}
                 onChangeText={setWorkoutName}
+                placeholder="Enter workout name"
             />
-
             <Text style={styles.label}>Workout Notes (optional)</Text>
             <TextInput
                 style={[styles.input, { height: 80 }]}
-                placeholder="Enter any notes here"
-                multiline
                 value={workoutNotes}
                 onChangeText={setWorkoutNotes}
+                placeholder="Enter workout notes"
+                multiline
             />
-
             <Text style={styles.label}>Select Planned Exercises:</Text>
             <View style={styles.exerciseList}>
                 {plannedExercises.map((ex) => {
@@ -121,27 +116,18 @@ const PlanWorkout = ({ navigation }: any) => {
                     return (
                         <TouchableOpacity
                             key={ex.id}
-                            style={[
-                                styles.exerciseItem,
-                                isSelected && styles.exerciseItemSelected,
-                            ]}
+                            style={[styles.exerciseItem, isSelected && styles.exerciseItemSelected]}
                             onPress={() => toggleExerciseSelection(ex.id)}
                         >
-                            <Text
-                                style={[
-                                    styles.exerciseText,
-                                    isSelected && styles.exerciseTextSelected,
-                                ]}
-                            >
+                            <Text style={[styles.exerciseText, isSelected && styles.exerciseTextSelected]}>
                                 {`${ex.exerciseName} ${ex.plannedWeight}kg @ ${ex.plannedSets}x${ex.plannedReps}`}
                             </Text>
                         </TouchableOpacity>
                     );
                 })}
             </View>
-
             <View style={styles.buttonContainer}>
-                <Button title="Save Workout" onPress={handleSaveWorkout} />
+                <Button title="Save Changes" onPress={handleSaveChanges} />
                 <Button title="Cancel" onPress={() => navigation.goBack()} color="#ff5c5c" />
             </View>
         </ScrollView>
@@ -205,5 +191,5 @@ const styles = StyleSheet.create({
     },
 });
 
-export default PlanWorkout;
+export default EditWorkout;
 
