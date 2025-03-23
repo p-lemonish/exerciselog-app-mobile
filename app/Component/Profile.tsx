@@ -71,6 +71,14 @@ const Profile = () => {
         }
     };
 
+    const handleLogout = () => {
+        authContext?.logout();
+        navigation.reset({
+            index: 0,
+            routes: [{ name: 'Login' }],
+        });
+    };
+
     if (loading) {
         return (
             <View style={styles.center}>
@@ -126,7 +134,7 @@ const Profile = () => {
             />
 
             <View style={styles.logoutContainer}>
-                <Button title="Logout" onPress={authContext?.logout} color="#ff5c5c" />
+                <Button title="Logout" onPress={handleLogout} color="#ff5c5c" />
             </View>
         </View>
     );

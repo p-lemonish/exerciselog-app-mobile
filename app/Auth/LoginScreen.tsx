@@ -20,7 +20,10 @@ export const LoginScreen = () => {
         if (response.status === 200 && data.jwt) {
             authContext?.login(username, data.jwt);
             Alert.alert('Login Success!', data.message);
-            navigation.navigate('Home');
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'Home' }],
+            });
         } else {
             Alert.alert('Login Failed', data.message || 'Please check your credentials.');
         }
