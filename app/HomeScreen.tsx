@@ -18,14 +18,21 @@ export const HomeScreen = () => {
                     style={styles.menuItem}
                     onPress={() => navigation.navigate('CreateExercise')}
                 >
-                    <Text style={styles.menuText}>Create Exercises</Text>
+                    <Text style={styles.menuText}>Create & Plan Exercises</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
                     style={styles.menuItem}
                     onPress={() => navigation.navigate('PlanWorkout')}
                 >
-                    <Text style={styles.menuText}>Plan Upcoming Workout</Text>
+                    <Text style={styles.menuText}>Plan Your Workout</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    style={styles.menuItem}
+                    onPress={() => navigation.navigate('WorkoutList')}
+                >
+                    <Text style={styles.menuText}>Your Workouts</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity

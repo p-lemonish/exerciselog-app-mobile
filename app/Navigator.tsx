@@ -6,8 +6,12 @@ import RegisterScreen from './Auth/RegisterScreen';
 import { HomeScreen } from './HomeScreen';
 import CreateExercise from './Component/CreateExercise';
 import PlanWorkout from './Component/PlanWorkout';
-import TrackWorkout from './Component/TrackWorkout';
+import WorkoutList from './Component/WorkoutList';
+import TrackProgress from './Component/TrackProgress';
 import Profile from './Component/Profile';
+import EditWorkout from './Component/EditWorkout';
+import WorkoutDetail from './Component/WorkoutDetail';
+import StartWorkout from './Component/StartWorkout';
 
 export type RootStackParamList = {
     Login: undefined;
@@ -15,7 +19,11 @@ export type RootStackParamList = {
     Home: undefined;
     CreateExercise: undefined;
     PlanWorkout: undefined;
-    TrackWorkout: undefined;
+    WorkoutList: undefined;
+    EditWorkout: undefined;
+    StartWorkout: undefined;
+    WorkoutDetail: undefined;
+    TrackProgress: undefined;
     Profile: undefined;
 };
 
@@ -47,12 +55,32 @@ const AppNavigator = () => {
             <Stack.Screen
                 name="PlanWorkout"
                 component={PlanWorkout}
-                options={{ title: 'PlanWorkout' }}
+                options={{ title: 'Plan Your Workout' }}
             />
             <Stack.Screen
-                name="TrackWorkout"
-                component={TrackWorkout}
-                options={{ title: 'TrackWorkout' }}
+                name="EditWorkout"
+                component={EditWorkout}
+                options={{ title: 'Editing Workout' }}
+            />
+            <Stack.Screen
+                name="StartWorkout"
+                component={StartWorkout}
+                options={{ title: 'Working Out' }}
+            />
+            <Stack.Screen
+                name="WorkoutDetail"
+                component={WorkoutDetail}
+                options={{ title: 'Workout Details' }}
+            />
+            <Stack.Screen
+                name="WorkoutList"
+                component={WorkoutList}
+                options={{ title: 'Your Workouts' }}
+            />
+            <Stack.Screen
+                name="TrackProgress"
+                component={TrackProgress}
+                options={{ title: 'Track Your Progress' }}
             />
             <Stack.Screen
                 name="Profile"
