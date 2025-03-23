@@ -113,17 +113,18 @@ const StartWorkout = ({ navigation, route }: any) => {
             .filter((ex) => workout.selectedExerciseIds.includes(ex.id))
             .map((ex) => {
                 const completedSets = (setResults[ex.id] || []).filter((s) => s.completed);
-                return {
-                    exerciseId: ex.id,
-                    exerciseName: ex.exerciseName,
-                    setLogDtoList: completedSets.map(({ completed, ...rest }) => rest),
-                    notes: ex.notes || '',
-                };
+                if (completedSets.length > 0) {
+                    return {
+                        exerciseId: ex.id,
+                        exerciseName: ex.exerciseName,
+                        setLogDtoList: completedSets.map(({ completed, ...rest }) => rest),
+                        notes: ex.notes || '',
+                    };
+                } else {
+                    return null;
+                }
             })
             .filter((log) => log !== null) as ExerciseLog[];
-        exerciseLogDtos.map((ex) => {
-            console.log(ex);
-        });
 
         const completedWorkoutObj: CompletedWorkout = {
             id: workoutId,
