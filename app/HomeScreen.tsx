@@ -37,7 +37,7 @@ export const HomeScreen = () => {
 
                 <TouchableOpacity
                     style={styles.menuItem}
-                    onPress={() => navigation.navigate('TrackWorkout')}
+                    onPress={() => navigation.navigate('TrackProgress')}
                 >
                     <Text style={styles.menuText}>Track Workout Progress</Text>
                 </TouchableOpacity>
