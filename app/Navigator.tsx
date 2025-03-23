@@ -12,6 +12,7 @@ import Profile from './Component/Profile';
 import EditWorkout from './Component/EditWorkout';
 import WorkoutDetail from './Component/WorkoutDetail';
 import StartWorkout from './Component/StartWorkout';
+import TrackProgressDetail from './Component/TrackProgressDetail';
 
 export type RootStackParamList = {
     Login: undefined;
@@ -24,8 +25,26 @@ export type RootStackParamList = {
     StartWorkout: undefined;
     WorkoutDetail: undefined;
     TrackProgress: undefined;
+    TrackProgressDetail: {
+        log: ExerciseLog;
+        date: string;
+    };
     Profile: undefined;
 };
+
+interface SetResult {
+    setNumber: number;
+    reps: number;
+    weight: number;
+    completed: boolean;
+}
+
+interface ExerciseLog {
+    exerciseId: number;
+    exerciseName: string;
+    setLogDtoList: SetResult[];
+    notes: string;
+}
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -81,6 +100,11 @@ const AppNavigator = () => {
                 name="TrackProgress"
                 component={TrackProgress}
                 options={{ title: 'Track Your Progress' }}
+            />
+            <Stack.Screen
+                name="TrackProgressDetail"
+                component={TrackProgressDetail}
+                options={{ title: 'Details' }}
             />
             <Stack.Screen
                 name="Profile"
