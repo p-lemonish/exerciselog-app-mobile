@@ -1,10 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, Button, TextInput, StyleSheet, Alert, ActivityIndicator } from 'react-native';
+import { View, Alert, ActivityIndicator } from 'react-native';
+import { Text, TextInput, Button } from 'react-native-paper';
 import { AuthContext } from '../Auth/AuthContext';
 import api from '../Service/api';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../Navigator';
+import { MyDarkTheme } from '../theme';
 
 const Profile = () => {
     const authContext = useContext(AuthContext);
@@ -64,7 +66,6 @@ const Profile = () => {
             setNewPassword('');
             setConfirmPassword('');
         } catch (error) {
-            console.error(error);
             Alert.alert('Error', 'Failed to update password.');
         } finally {
             setIsUpdating(false);
@@ -81,113 +82,115 @@ const Profile = () => {
 
     if (loading) {
         return (
-            <View style={styles.center}>
-                <ActivityIndicator size='large' color='#0000ff' />
-                <Text>Loading...</Text>
+            <View
+                style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: MyDarkTheme.colors.background,
+                }}
+            >
+                <ActivityIndicator size="large" color="#aaa" />
+                <Text style={{ color: MyDarkTheme.colors.text }}>Loading...</Text>
             </View>
         );
     }
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Your Profile</Text>
+        <View
+            style={{
+                flex: 1,
+                padding: 20,
+                backgroundColor: MyDarkTheme.colors.background,
+            }}
+        >
+            <Text
+                style={{
+                    fontSize: 28,
+                    fontWeight: 'bold',
+                    marginBottom: 20,
+                    textAlign: 'center',
+                    color: MyDarkTheme.colors.text,
+                }}
+            >
+                Your Profile
+            </Text>
 
-            <View style={styles.infoContainer}>
-                <Text style={styles.label}>Name:</Text>
-                <Text style={styles.info}>{userData.username || 'N/A'}</Text>
+            <View style={{ flexDirection: 'row', marginBottom: 10, alignItems: 'center' }}>
+                <Text style={{ fontSize: 16, fontWeight: 'bold', width: 80, color: MyDarkTheme.colors.text }}>
+                    Name:
+                </Text>
+                <Text style={{ fontSize: 16, flexShrink: 1, color: MyDarkTheme.colors.text }}>
+                    {userData.username || 'N/A'}
+                </Text>
             </View>
-            <View style={styles.infoContainer}>
-                <Text style={styles.label}>Email:</Text>
-                <Text style={styles.info}>{userData.email || 'N/A'}</Text>
+            <View style={{ flexDirection: 'row', marginBottom: 10, alignItems: 'center' }}>
+                <Text style={{ fontSize: 16, fontWeight: 'bold', width: 80, color: MyDarkTheme.colors.text }}>
+                    Email:
+                </Text>
+                <Text style={{ fontSize: 16, flexShrink: 1, color: MyDarkTheme.colors.text }}>
+                    {userData.email || 'N/A'}
+                </Text>
             </View>
-            <View style={styles.infoContainer}>
-                <Text style={styles.label}>Role:</Text>
-                <Text style={styles.info}>{userData.roleName || 'N/A'}</Text>
+            <View style={{ flexDirection: 'row', marginBottom: 10, alignItems: 'center' }}>
+                <Text style={{ fontSize: 16, fontWeight: 'bold', width: 80, color: MyDarkTheme.colors.text }}>
+                    Role:
+                </Text>
+                <Text style={{ fontSize: 16, flexShrink: 1, color: MyDarkTheme.colors.text }}>
+                    {userData.roleName || 'N/A'}
+                </Text>
             </View>
 
-            <Text style={styles.subtitle}>Change Password</Text>
+            <Text
+                style={{
+                    fontSize: 22,
+                    fontWeight: 'bold',
+                    marginVertical: 20,
+                    textAlign: 'center',
+                    color: MyDarkTheme.colors.text,
+                }}
+            >
+                Change Password
+            </Text>
             <TextInput
-                style={styles.input}
                 placeholder="Current Password"
                 secureTextEntry
                 value={currentPassword}
                 onChangeText={setCurrentPassword}
+                mode="outlined"
+                style={{ borderWidth: 1, marginBottom: 10, padding: 8 }}
+                placeholderTextColor="#AAAAAA"
             />
             <TextInput
-                style={styles.input}
                 placeholder="New Password"
                 secureTextEntry
                 value={newPassword}
                 onChangeText={setNewPassword}
+                mode="outlined"
+                style={{ borderWidth: 1, marginBottom: 10, padding: 8 }}
+                placeholderTextColor="#AAAAAA"
             />
             <TextInput
-                style={styles.input}
                 placeholder="Confirm New Password"
                 secureTextEntry
                 value={confirmPassword}
                 onChangeText={setConfirmPassword}
+                mode="outlined"
+                style={{ borderWidth: 1, marginBottom: 10, padding: 8 }}
+                placeholderTextColor="#AAAAAA"
             />
-            <Button
-                title={isUpdating ? 'Updating...' : 'Change Password'}
-                onPress={handleChangePassword}
-                disabled={isUpdating}
-            />
+            <Button mode="contained" onPress={handleChangePassword} disabled={isUpdating}>
+                {isUpdating ? 'Updating...' : 'Change Password'}
+            </Button>
 
-            <View style={styles.logoutContainer}>
-                <Button title="Logout" onPress={handleLogout} color="#ff5c5c" />
+            <View style={{ marginTop: 30, alignItems: 'center' }}>
+                <Button mode="contained" buttonColor="#ff5c5c" onPress={handleLogout}>
+                    Logout
+                </Button>
             </View>
         </View>
     );
 };
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20,
-        backgroundColor: '#fff',
-    },
-    center: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    title: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        marginBottom: 20,
-        textAlign: 'center',
-    },
-    infoContainer: {
-        flexDirection: 'row',
-        marginBottom: 10,
-        alignItems: 'center',
-    },
-    label: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        width: 80,
-    },
-    info: {
-        fontSize: 16,
-        flexShrink: 1,
-    },
-    subtitle: {
-        fontSize: 22,
-        fontWeight: 'bold',
-        marginVertical: 20,
-        textAlign: 'center',
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-        padding: 10,
-        marginBottom: 10,
-        borderRadius: 5,
-    },
-    logoutContainer: {
-        marginTop: 30,
-        alignItems: 'center',
-    },
-});
-
 export default Profile;
+

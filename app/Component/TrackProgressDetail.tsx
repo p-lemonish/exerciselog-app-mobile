@@ -1,7 +1,8 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { ScrollView, Text } from 'react-native';
 import { RootStackParamList } from '../Navigator';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { MyDarkTheme } from '../theme';
 
 type TrackProgressDetailProps = NativeStackScreenProps<RootStackParamList, 'TrackProgressDetail'>;
 
@@ -9,63 +10,75 @@ const TrackProgressDetail: React.FC<TrackProgressDetailProps> = ({ route }) => {
     const { log, date } = route.params;
 
     return (
-        <ScrollView contentContainerStyle={styles.container}>
-            <Text style={styles.title}>{log.exerciseName}</Text>
-            {date && <Text style={styles.date}>{date}</Text>}
+        <ScrollView
+            contentContainerStyle={{
+                padding: 20,
+                backgroundColor: MyDarkTheme.colors.background,
+                flexGrow: 1,
+            }}
+        >
+            <Text
+                style={{
+                    fontSize: 26,
+                    fontWeight: 'bold',
+                    marginBottom: 10,
+                    textAlign: 'center',
+                    color: MyDarkTheme.colors.text,
+                }}
+            >
+                {log.exerciseName}
+            </Text>
+            {date && (
+                <Text
+                    style={{
+                        fontSize: 16,
+                        textAlign: 'center',
+                        marginBottom: 20,
+                        color: MyDarkTheme.colors.text,
+                    }}
+                >
+                    {date}
+                </Text>
+            )}
 
-            {log.setLogDtoList.map((set) => (
-                <View key={set.setNumber} style={styles.setRow}>
-                    <Text style={styles.setText}>
-                        {`Set ${set.setNumber}: ${set.reps} reps, ${set.weight} kg`}
-                    </Text>
-                </View>
+            {log.setLogDtoList.map((set: any) => (
+                <Text
+                    key={set.setNumber}
+                    style={{
+                        paddingVertical: 8,
+                        borderBottomWidth: 1,
+                        borderBottomColor: '#ccc',
+                        fontSize: 18,
+                        color: MyDarkTheme.colors.text,
+                    }}
+                >
+                    {`Set ${set.setNumber}: ${set.reps} reps, ${set.weight} kg`}
+                </Text>
             ))}
 
-            <Text style={styles.notesHeader}>Exercise Notes:</Text>
-            {log.notes ? (
-                <Text style={styles.notes}>{log.notes}</Text>
-            ) : (
-                <Text style={styles.notes}>No notes provided.</Text>
-            )}
+            <Text
+                style={{
+                    fontSize: 20,
+                    fontWeight: '600',
+                    marginTop: 20,
+                    marginBottom: 5,
+                    color: MyDarkTheme.colors.text,
+                }}
+            >
+                Exercise Notes:
+            </Text>
+            <Text
+                style={{
+                    fontSize: 16,
+                    lineHeight: 22,
+                    color: MyDarkTheme.colors.text,
+                }}
+            >
+                {log.notes || 'No notes provided.'}
+            </Text>
         </ScrollView>
     );
 };
 
-const styles = StyleSheet.create({
-    container: {
-        padding: 20,
-        backgroundColor: '#fff',
-        flexGrow: 1,
-    },
-    title: {
-        fontSize: 26,
-        fontWeight: 'bold',
-        marginBottom: 10,
-        textAlign: 'center',
-    },
-    date: {
-        fontSize: 16,
-        textAlign: 'center',
-        marginBottom: 20,
-    },
-    setRow: {
-        paddingVertical: 8,
-        borderBottomWidth: 1,
-        borderBottomColor: '#ccc',
-    },
-    setText: {
-        fontSize: 18,
-    },
-    notesHeader: {
-        fontSize: 20,
-        fontWeight: '600',
-        marginTop: 20,
-        marginBottom: 5,
-    },
-    notes: {
-        fontSize: 16,
-        lineHeight: 22,
-    },
-});
-
 export default TrackProgressDetail;
+

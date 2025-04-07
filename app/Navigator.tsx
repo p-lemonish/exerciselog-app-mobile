@@ -1,5 +1,6 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { useTheme } from 'react-native-paper';
 
 import LoginScreen from './Auth/LoginScreen';
 import RegisterScreen from './Auth/RegisterScreen';
@@ -49,8 +50,15 @@ interface ExerciseLog {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const AppNavigator = () => {
+    const theme = useTheme();
     return (
-        <Stack.Navigator initialRouteName="Home">
+        <Stack.Navigator screenOptions={{
+            headerStyle: {
+                backgroundColor: theme.colors.background,
+            },
+            headerTintColor: theme.colors.onBackground,
+        }}
+            initialRouteName="Home">
             <Stack.Screen
                 name="Login"
                 component={LoginScreen}

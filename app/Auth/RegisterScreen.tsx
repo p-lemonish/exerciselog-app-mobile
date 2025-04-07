@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, Alert } from 'react-native';
+import { View, Alert } from 'react-native';
+import { Text, TextInput, Button } from 'react-native-paper';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../Navigator';
+import { MyDarkTheme } from '../theme';
 
 const RegisterScreen = () => {
     const [username, setUsername] = useState('');
@@ -18,7 +20,6 @@ const RegisterScreen = () => {
             Alert.alert('Error', 'Passwords do not match.');
             return;
         }
-
         try {
             const response = await axios.post(`${baseURL}/register`, {
                 username,
@@ -26,7 +27,6 @@ const RegisterScreen = () => {
                 password,
                 confirmPassword,
             });
-
             if (response.status === 200 || response.status === 201) {
                 Alert.alert('Registration Successful', 'Please log in with your new credentials.');
                 navigation.navigate('Login');
@@ -34,44 +34,70 @@ const RegisterScreen = () => {
                 Alert.alert('Registration Failed', response.data.message || 'An error occurred.');
             }
         } catch (error) {
-            console.error('Registration error:', error);
             Alert.alert('Registration Error', 'An error occurred during registration.');
         }
     };
 
     return (
-        <View style={{ flex: 1, padding: 20, justifyContent: 'center' }}>
-            <Text style={{ fontSize: 24, marginBottom: 20 }}>Register</Text>
+        <View
+            style={{
+                flex: 1,
+                padding: 20,
+                justifyContent: 'center',
+                backgroundColor: MyDarkTheme.colors.background,
+            }}
+        >
+            <Text style={{ fontSize: 24, marginBottom: 20, color: MyDarkTheme.colors.text }}>
+                Register
+            </Text>
             <TextInput
                 placeholder="Username"
                 value={username}
                 onChangeText={setUsername}
+                mode="outlined"
                 style={{ borderWidth: 1, marginBottom: 10, padding: 8 }}
+                placeholderTextColor="#AAAAAA"
             />
             <TextInput
                 placeholder="Email"
                 value={email}
                 onChangeText={setEmail}
+                mode="outlined"
                 keyboardType="email-address"
                 style={{ borderWidth: 1, marginBottom: 10, padding: 8 }}
+                placeholderTextColor="#AAAAAA"
             />
             <TextInput
                 placeholder="Password"
                 value={password}
-                secureTextEntry
                 onChangeText={setPassword}
+                mode="outlined"
+                secureTextEntry
                 style={{ borderWidth: 1, marginBottom: 10, padding: 8 }}
+                placeholderTextColor="#AAAAAA"
             />
             <TextInput
                 placeholder="Confirm Password"
                 value={confirmPassword}
-                secureTextEntry
                 onChangeText={setConfirmPassword}
+                mode="outlined"
+                secureTextEntry
                 style={{ borderWidth: 1, marginBottom: 10, padding: 8 }}
+                placeholderTextColor="#AAAAAA"
             />
-            <Button title="Register" onPress={handleRegister} />
+
+            <Button mode="contained" onPress={handleRegister}>
+                Register
+            </Button>
+
             <View style={{ marginTop: 20 }}>
-                <Button title="Back to Login" onPress={() => navigation.navigate('Login')} />
+                <Button
+                    mode="text"
+                    textColor={MyDarkTheme.colors.primary}
+                    onPress={() => navigation.navigate('Login')}
+                >
+                    Back to Login
+                </Button>
             </View>
         </View>
     );

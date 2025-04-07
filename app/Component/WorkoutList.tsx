@@ -1,14 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import {
-    View,
-    Text,
-    TouchableOpacity,
-    StyleSheet,
-    Button,
-    Alert,
-    ScrollView,
-} from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { Button } from 'react-native-paper';
 import api from '../Service/api';
+import { MyDarkTheme } from '../theme';
 
 interface Workout {
     id: number;
@@ -73,33 +67,63 @@ const WorkoutList = ({ navigation }: any) => {
 
     if (loading) {
         return (
-            <View style={styles.center}>
-                <Text>Loading workouts...</Text>
+            <View
+                style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: MyDarkTheme.colors.background,
+                }}
+            >
+                <Text style={{ color: MyDarkTheme.colors.text }}>Loading workouts...</Text>
             </View>
         );
     }
 
     return (
-        <ScrollView contentContainerStyle={styles.container}>
-            <Text style={styles.headerText}>
+        <ScrollView
+            contentContainerStyle={{
+                padding: 20,
+                backgroundColor: MyDarkTheme.colors.background,
+                flexGrow: 1,
+            }}
+        >
+            <Text
+                style={{
+                    fontSize: 20,
+                    marginBottom: 10,
+                    textAlign: 'center',
+                    color: MyDarkTheme.colors.text,
+                }}
+            >
                 Your workouts – start by pressing a workout to begin.
             </Text>
-            <View style={styles.editHeader}>
-                <Button title={editMode ? 'Cancel Edit' : 'Edit'} onPress={toggleEditMode} />
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
+                <Button mode="contained" onPress={toggleEditMode}>
+                    {editMode ? 'Cancel Edit' : 'Edit'}
+                </Button>
                 {editMode && selectedForDeletion.length > 0 && (
-                    <Button title="Delete" onPress={handleDeleteWorkouts} color="#ff5c5c" />
+                    <Button mode="contained" buttonColor="#ff5c5c" onPress={handleDeleteWorkouts}>
+                        Delete
+                    </Button>
                 )}
             </View>
-            <View style={styles.workoutList}>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
                 {workouts.map((workout) => {
                     const isSelected = selectedForDeletion.includes(workout.id);
                     return (
                         <TouchableOpacity
                             key={workout.id}
-                            style={[
-                                styles.workoutItem,
-                                editMode && isSelected && styles.workoutItemSelected,
-                            ]}
+                            style={{
+                                backgroundColor: editMode && isSelected ? MyDarkTheme.colors.primary : '#333',
+                                paddingVertical: 10,
+                                paddingHorizontal: 12,
+                                borderRadius: 10,
+                                marginRight: 10,
+                                marginBottom: 10,
+                                minWidth: '45%',
+                                alignItems: 'center',
+                            }}
                             onPress={() => {
                                 if (editMode) {
                                     toggleSelection(workout.id);
@@ -113,11 +137,26 @@ const WorkoutList = ({ navigation }: any) => {
                                 }
                             }}
                         >
-                            <Text style={styles.workoutText}>
+                            <Text style={{ fontSize: 16, color: isSelected ? '#fff' : MyDarkTheme.colors.text }}>
                                 {`Workout: ${workout.workoutName}`}
                             </Text>
                             {editMode && isSelected && (
-                                <Text style={styles.checkbox}>✓</Text>
+                                <Text
+                                    style={{
+                                        position: 'absolute',
+                                        top: 5,
+                                        right: 5,
+                                        backgroundColor: '#fff',
+                                        color: MyDarkTheme.colors.primary,
+                                        borderRadius: 10,
+                                        paddingHorizontal: 4,
+                                        paddingVertical: 2,
+                                        fontWeight: 'bold',
+                                        fontSize: 12,
+                                    }}
+                                >
+                                    ✓
+                                </Text>
                             )}
                         </TouchableOpacity>
                     );
@@ -126,62 +165,6 @@ const WorkoutList = ({ navigation }: any) => {
         </ScrollView>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        padding: 20,
-        backgroundColor: '#fff',
-        flexGrow: 1,
-    },
-    center: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    headerText: {
-        fontSize: 20,
-        marginBottom: 10,
-        textAlign: 'center',
-    },
-    editHeader: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginBottom: 10,
-    },
-    workoutList: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-    },
-    workoutItem: {
-        backgroundColor: '#eee',
-        paddingVertical: 10,
-        paddingHorizontal: 12,
-        borderRadius: 10,
-        marginRight: 10,
-        marginBottom: 10,
-        minWidth: '45%',
-        alignItems: 'center',
-    },
-    workoutItemSelected: {
-        backgroundColor: '#007bff',
-    },
-    workoutText: {
-        fontSize: 16,
-        color: '#000',
-    },
-    checkbox: {
-        position: 'absolute',
-        top: 5,
-        right: 5,
-        backgroundColor: '#fff',
-        color: '#007bff',
-        borderRadius: 10,
-        paddingHorizontal: 4,
-        paddingVertical: 2,
-        fontWeight: 'bold',
-        fontSize: 12,
-    },
-});
 
 export default WorkoutList;
 

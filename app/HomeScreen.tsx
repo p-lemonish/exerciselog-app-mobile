@@ -1,98 +1,78 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { RootStackParamList } from './Navigator';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { View } from 'react-native';
+import { Text, Button, useTheme } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from './Navigator';
 
 export const HomeScreen = () => {
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+    const theme = useTheme();
 
     return (
-        <View style={styles.container}>
-            <View style={styles.header}>
-                <Text style={styles.welcome}>Welcome to the Home Screen!</Text>
+        <View
+            style={{
+                flex: 1,
+                padding: 20,
+                justifyContent: 'space-between',
+                backgroundColor: theme.colors.background,
+            }}
+        >
+            <View style={{ alignItems: 'center' }}>
+                <Text style={{ fontSize: 24, marginBottom: 10, color: theme.colors.onBackground }}>
+                    Welcome to the Home Screen!
+                </Text>
             </View>
 
-            <View style={styles.menuContainer}>
-                <TouchableOpacity
-                    style={styles.menuItem}
+            <View style={{ flex: 1, justifyContent: 'center' }}>
+                <Button
+                    mode="contained"
+                    style={{ marginVertical: 10 }}
                     onPress={() => navigation.navigate('CreateExercise')}
+                    textColor={theme.colors.onSurface}
                 >
-                    <Text style={styles.menuText}>Create & Plan Exercises</Text>
-                </TouchableOpacity>
+                    Create & Plan Exercises
+                </Button>
 
-                <TouchableOpacity
-                    style={styles.menuItem}
+                <Button
+                    mode="contained"
+                    style={{ marginVertical: 10 }}
                     onPress={() => navigation.navigate('PlanWorkout')}
+                    textColor={theme.colors.onSurface}
                 >
-                    <Text style={styles.menuText}>Plan Your Workout</Text>
-                </TouchableOpacity>
+                    Plan Your Workout
+                </Button>
 
-                <TouchableOpacity
-                    style={styles.menuItem}
+                <Button
+                    mode="contained"
+                    style={{ marginVertical: 10 }}
                     onPress={() => navigation.navigate('WorkoutList')}
+                    textColor={theme.colors.onSurface}
                 >
-                    <Text style={styles.menuText}>Your Workouts</Text>
-                </TouchableOpacity>
+                    Your Workouts
+                </Button>
 
-                <TouchableOpacity
-                    style={styles.menuItem}
+                <Button
+                    mode="contained"
+                    style={{ marginVertical: 10 }}
                     onPress={() => navigation.navigate('TrackProgress')}
+                    textColor={theme.colors.onSurface}
                 >
-                    <Text style={styles.menuText}>Track Workout Progress</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={styles.menuItem}
+                    Track Workout Progress
+                </Button>
+
+                <Button
+                    mode="contained"
+                    style={{ marginVertical: 10 }}
                     onPress={() => navigation.navigate('Profile')}
+                    textColor={theme.colors.onSurface}
                 >
-                    <Text style={styles.menuText}>Profile</Text>
-                </TouchableOpacity>
+                    Profile
+                </Button>
             </View>
         </View>
     );
 };
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20,
-        justifyContent: 'space-between',
-    },
-    center: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    header: {
-        alignItems: 'center',
-    },
-    welcome: {
-        fontSize: 24,
-        marginBottom: 10,
-    },
-    menuContainer: {
-        flex: 1,
-        justifyContent: 'center',
-    },
-    menuItem: {
-        backgroundColor: '#adebb3',
-        padding: 20,
-        marginVertical: 10,
-        borderRadius: 8,
-        alignItems: 'center',
-    },
-    menuText: {
-        fontSize: 18,
-        color: '#333',
-    },
-    profileContainer: {
-        padding: 10,
-        borderTopWidth: 1,
-        borderColor: '#ccc',
-    },
-    profileText: {
-        fontWeight: 'bold',
-    },
-});
-
 export default HomeScreen;
+

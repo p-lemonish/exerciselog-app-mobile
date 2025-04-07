@@ -1,13 +1,8 @@
+
 import React, { useEffect, useState } from 'react';
-import {
-    View,
-    Text,
-    FlatList,
-    TouchableOpacity,
-    StyleSheet,
-    Alert,
-} from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Alert } from 'react-native';
 import api from '../Service/api';
+import { MyDarkTheme } from '../theme';
 
 interface SetResult {
     setNumber: number;
@@ -47,9 +42,8 @@ const TrackProgress = ({ navigation }: any) => {
                 const summaries: ExerciseLogSummary[] = logs.map((log) => {
                     const sortedSets = [...log.setLogDtoList].sort((a, b) => a.setNumber - b.setNumber);
                     const repsSummary = sortedSets.map((s) => s.reps).join('/');
-                    const weightSummary = sortedSets.length > 0
-                        ? Math.max(...sortedSets.map((s) => s.weight)).toString()
-                        : '';
+                    const weightSummary =
+                        sortedSets.length > 0 ? Math.max(...sortedSets.map((s) => s.weight)).toString() : '';
 
                     return {
                         id: log.exerciseId,
@@ -74,98 +68,102 @@ const TrackProgress = ({ navigation }: any) => {
 
     const renderItem = ({ item }: { item: ExerciseLogSummary; }) => (
         <TouchableOpacity
-            style={styles.row}
-            onPress={() =>
-                navigation.navigate('TrackProgressDetail', { log: item.fullLog })
-            }
+            style={{
+                flexDirection: 'row',
+                paddingVertical: 10,
+                borderBottomWidth: 1,
+                borderBottomColor: '#eee',
+            }}
+            onPress={() => navigation.navigate('TrackProgressDetail', { log: item.fullLog })}
         >
-            <Text style={[styles.cell, styles.dateCell]}>{item.date}</Text>
-            <Text style={[styles.cell, styles.nameCell]}>{item.exerciseName}</Text>
-            <Text style={[styles.cell, styles.repsCell]}>{item.repsSummary}</Text>
-            <Text style={[styles.cell, styles.weightCell]}>{item.weightSummary}</Text>
+            <Text
+                style={{ flex: 1, color: MyDarkTheme.colors.text }}
+            >
+                {item.date}
+            </Text>
+            <Text
+                style={{ flex: 2, color: MyDarkTheme.colors.text }}
+            >
+                {item.exerciseName}
+            </Text>
+            <Text
+                style={{ flex: 1, textAlign: 'center', color: MyDarkTheme.colors.text }}
+            >
+                {item.repsSummary}
+            </Text>
+            <Text
+                style={{ flex: 1, textAlign: 'center', color: MyDarkTheme.colors.text }}
+            >
+                {item.weightSummary}
+            </Text>
         </TouchableOpacity>
     );
 
     if (loading) {
         return (
-            <View style={styles.center}>
-                <Text>Loading progress logs...</Text>
+            <View
+                style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: MyDarkTheme.colors.background,
+                }}
+            >
+                <Text style={{ color: MyDarkTheme.colors.text }}>Loading progress logs...</Text>
             </View>
         );
     }
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.header}>
+        <View
+            style={{
+                flex: 1,
+                padding: 10,
+                backgroundColor: MyDarkTheme.colors.background,
+            }}
+        >
+            <Text
+                style={{
+                    fontSize: 20,
+                    marginBottom: 10,
+                    textAlign: 'center',
+                    color: MyDarkTheme.colors.text,
+                }}
+            >
                 Your Exercise Logs – press an entry for more details.
             </Text>
-            <View style={styles.tableHeader}>
-                <Text style={[styles.headerCell, styles.dateCell]}>Date</Text>
-                <Text style={[styles.headerCell, styles.nameCell]}>Exercise</Text>
-                <Text style={[styles.headerCell, styles.repsCell]}>Reps</Text>
-                <Text style={[styles.headerCell, styles.weightCell]}>Max Weight</Text>
+            <View
+                style={{
+                    flexDirection: 'row',
+                    borderBottomWidth: 1,
+                    borderBottomColor: '#ccc',
+                    paddingVertical: 5,
+                }}
+            >
+                <Text style={{ flex: 1, fontWeight: 'bold', fontSize: 16, color: MyDarkTheme.colors.text }}>
+                    Date
+                </Text>
+                <Text style={{ flex: 2, fontWeight: 'bold', fontSize: 16, color: MyDarkTheme.colors.text }}>
+                    Exercise
+                </Text>
+                <Text style={{ flex: 1, textAlign: 'center', fontWeight: 'bold', fontSize: 16, color: MyDarkTheme.colors.text }}>
+                    Reps
+                </Text>
+                <Text style={{ flex: 1, textAlign: 'center', fontWeight: 'bold', fontSize: 16, color: MyDarkTheme.colors.text }}>
+                    Max Weight
+                </Text>
             </View>
             <FlatList
                 data={logSummaries}
                 keyExtractor={(item, index) => item.id.toString() + '-' + index.toString()}
                 renderItem={renderItem}
-                ListEmptyComponent={<Text>No progress logs found.</Text>}
+                ListEmptyComponent={
+                    <Text style={{ color: MyDarkTheme.colors.text }}>No progress logs found.</Text>
+                }
             />
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 10,
-        backgroundColor: '#fff',
-    },
-    center: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    header: {
-        fontSize: 20,
-        marginBottom: 10,
-        textAlign: 'center',
-    },
-    tableHeader: {
-        flexDirection: 'row',
-        borderBottomWidth: 1,
-        borderBottomColor: '#ccc',
-        paddingVertical: 5,
-    },
-    headerCell: {
-        fontWeight: 'bold',
-        fontSize: 16,
-    },
-    dateCell: {
-        flex: 1,
-    },
-    nameCell: {
-        flex: 2,
-    },
-    repsCell: {
-        flex: 1,
-        textAlign: 'center',
-    },
-    weightCell: {
-        flex: 1,
-        textAlign: 'center',
-    },
-    row: {
-        flexDirection: 'row',
-        paddingVertical: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: '#eee',
-    },
-    cell: {
-        flex: 1,
-        fontSize: 14,
-    },
-});
 
 export default TrackProgress;
 

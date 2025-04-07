@@ -1,13 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
-import {
-    View,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    StyleSheet,
-    Button,
-    Alert,
-} from 'react-native';
+import { View, Alert, TouchableOpacity, Text } from 'react-native';
+import { Button, TextInput, useTheme } from 'react-native-paper';
 import Slider from '@react-native-community/slider';
 import api from '../Service/api';
 import { AuthContext } from '../Auth/AuthContext';
@@ -30,6 +23,7 @@ const commonExercises = [
 ];
 
 const CreateExercise = ({ navigation }: any) => {
+    const theme = useTheme();
     const [exercise, setExercise] = useState<Exercise>({
         id: 0,
         exerciseName: '',
@@ -38,7 +32,6 @@ const CreateExercise = ({ navigation }: any) => {
         plannedWeight: 0,
         notes: '',
     });
-
     const [userExercises, setUserExercises] = useState<Exercise[]>([]);
     const [exerciseNames, setExerciseNames] = useState<string[]>([]);
     const [deletionMode, setDeletionMode] = useState(false);
@@ -56,7 +49,7 @@ const CreateExercise = ({ navigation }: any) => {
                         exercises
                             .map((exercise: any) => exercise.exerciseName)
                             .filter((name: string) => name != null)
-                    ),
+                    )
                 );
                 setExerciseNames(uniqueNames);
             } catch (error) {
@@ -118,8 +111,6 @@ const CreateExercise = ({ navigation }: any) => {
         }
     };
 
-    //TODO before handleDeleteSome do check if any exercise belongs to a workout, 
-    //ask if user wants to remove exercise from the workout too Y -> proceed.
     const handleDeleteSome = async () => {
         for (const id of selectedForDeletion) {
             try {
@@ -129,289 +120,252 @@ const CreateExercise = ({ navigation }: any) => {
                 Alert.alert('Error', `Failed to delete exercise with id ${id}`);
             }
         }
-        setExerciseNames(userExercises.filter(ex => !selectedForDeletion.includes(ex.id)).map((ex) => ex.exerciseName));
+        setExerciseNames(
+            userExercises
+                .filter((ex) => !selectedForDeletion.includes(ex.id))
+                .map((ex) => ex.exerciseName)
+        );
         setSelectedForDeletion([]);
         setDeletionMode(false);
     };
 
     const exerciseOptions = [
-        ...new Set(
-            [...exerciseNames, ...commonExercises]
-                .map((name) => name)
-                .filter((name) => name != null)
-        ),
+        ...new Set([...exerciseNames, ...commonExercises].filter((name) => name != null)),
     ];
+
     return (
-        <View style={styles.container}>
-            <Text style={styles.label}>Exercise Name</Text>
+        <View
+            style={{
+                flex: 1,
+                padding: 20,
+                backgroundColor: theme.colors.background,
+            }}
+        >
+            <Text style={{ color: theme.colors.onSurface, fontSize: 18, marginBottom: 10 }}>
+                Exercise Name
+            </Text>
             <TextInput
-                style={styles.input}
                 placeholder="Enter exercise name"
                 value={exercise.exerciseName}
                 onChangeText={(text) => updateExercise('exerciseName', text)}
+                mode="outlined"
+                style={{ borderWidth: 1, marginBottom: 10, padding: 8 }}
             />
-            <Text style={styles.subTitle}>Or choose from your exercises & common ones:</Text>
+
+            <Text style={{ color: theme.colors.onSurface, fontSize: 16, marginVertical: 10 }}>
+                Or choose from your exercises & common ones:
+            </Text>
 
             {userExercises.length > 0 && (
                 <View>
-                    <View style={styles.deletionHeader}>
-                        <Button
-                            title={deletionMode ? 'Cancel Edit' : 'Edit'}
-                            onPress={toggleDeletionMode}
-                        />
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
+                        <Button mode="contained" textColor={theme.colors.onSurface} onPress={toggleDeletionMode}>
+                            {deletionMode ? 'Cancel Edit' : 'Edit'}
+                        </Button>
                         {deletionMode && selectedForDeletion.length > 0 && (
-                            <Button title="Delete" onPress={handleDeleteSome} color="#ff5c5c" />
+                            <Button mode="contained" textColor={theme.colors.onSurface} onPress={handleDeleteSome}>
+                                Delete
+                            </Button>
                         )}
                     </View>
 
                     {deletionMode && (
-                        <View style={styles.blobContainer}>
-                            {userExercises.map((ex) => (
-                                <TouchableOpacity
-                                    key={ex.id}
-                                    style={[
-                                        styles.blob,
-                                        selectedForDeletion.includes(ex.id) && styles.blobSelected,
-                                    ]}
-                                    onPress={() => toggleSelection(ex.id)}
-                                >
-                                    <Text
-                                        style={[
-                                            styles.blobText,
-                                            selectedForDeletion.includes(ex.id) && styles.blobTextSelected,
-                                        ]}
+                        <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom: 20 }}>
+                            {userExercises.map((ex) => {
+                                const isSelected = selectedForDeletion.includes(ex.id);
+                                return (
+                                    <TouchableOpacity
+                                        key={ex.id}
+                                        style={{
+                                            backgroundColor: isSelected ? theme.colors.primary : theme.colors.secondary,
+                                            paddingVertical: 8,
+                                            paddingHorizontal: 12,
+                                            borderRadius: 20,
+                                            marginRight: 10,
+                                            marginBottom: 10,
+                                        }}
+                                        onPress={() => toggleSelection(ex.id)}
                                     >
-                                        {`${ex.exerciseName} ${ex.plannedSets}x${ex.plannedReps}@${ex.plannedWeight}kg`}
-                                    </Text>
-                                    {selectedForDeletion.includes(ex.id) && (
-                                        <Text style={styles.checkbox}>✓</Text>
-                                    )}
-                                </TouchableOpacity>
-                            ))}
+                                        <Text
+                                            style={{
+                                                color: theme.colors.onSurface,
+                                            }}
+                                        >
+                                            {`${ex.exerciseName} ${ex.plannedSets}x${ex.plannedReps}@${ex.plannedWeight}kg`}
+                                        </Text>
+                                    </TouchableOpacity>
+                                );
+                            })}
                         </View>
                     )}
                 </View>
             )}
 
-            <View style={styles.blobContainer}>
-                {exerciseOptions.map((name) => (
-                    <TouchableOpacity
-                        key={name}
-                        style={[
-                            styles.blob,
-                            exercise.exerciseName === name && styles.blobSelected,
-                        ]}
-                        onPress={() => updateExercise('exerciseName', name)}
-                    >
-                        <Text
-                            style={[
-                                styles.blobText,
-                                exercise.exerciseName === name && styles.blobTextSelected,
-                            ]}
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom: 20 }}>
+                {exerciseOptions.map((name) => {
+                    const isSelected = exercise.exerciseName === name;
+                    return (
+                        <TouchableOpacity
+                            key={name}
+                            style={{
+                                backgroundColor: isSelected ? theme.colors.primary : theme.colors.secondary,
+                                paddingVertical: 8,
+                                paddingHorizontal: 12,
+                                borderRadius: 20,
+                                marginRight: 10,
+                                marginBottom: 10,
+                            }}
+                            onPress={() => updateExercise('exerciseName', name)}
                         >
-                            {name}
-                        </Text>
-                    </TouchableOpacity>
-                ))}
+                            <Text style={{ color: theme.colors.onSurface }}>
+                                {name}
+                            </Text>
+                        </TouchableOpacity>
+                    );
+                })}
             </View>
-            <Text style={styles.label}>Planned Sets: {exercise.plannedSets}</Text>
+
+            <Text style={{ color: theme.colors.onSurface, fontSize: 18, marginVertical: 10 }}>
+                Planned Sets: {exercise.plannedSets}
+            </Text>
             <Slider
-                style={styles.slider}
+                style={{ width: '100%', height: 40 }}
                 minimumValue={1}
                 maximumValue={10}
                 step={1}
                 value={exercise.plannedSets}
                 onValueChange={(value) => updateExercise('plannedSets', value)}
             />
-            <View style={styles.adjustContainer}>
-                <Button
-                    title="-"
-                    onPress={() =>
-                        updateExercise('plannedSets', Math.max(1, exercise.plannedSets - 1))
-                    }
-                />
-                <Button
-                    title="+"
-                    onPress={() =>
-                        updateExercise('plannedSets', exercise.plannedSets + 1)
-                    }
-                />
+            <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginVertical: 10 }}>
+                <Button mode="contained" onPress={() =>
+                    updateExercise('plannedSets', Math.max(1, exercise.plannedSets - 1))
+                }
+                    textColor={theme.colors.onSurface}
+                >
+                    -1
+                </Button>
+                <Button mode="contained" onPress={() =>
+                    updateExercise('plannedSets', exercise.plannedSets + 1)
+                }
+                    textColor={theme.colors.onSurface}
+                >
+                    +1
+                </Button>
             </View>
 
-            <Text style={styles.label}>Planned Reps: {exercise.plannedReps}</Text>
+            <Text style={{ color: theme.colors.onSurface, fontSize: 18, marginVertical: 10 }}>
+                Planned Reps: {exercise.plannedReps}
+            </Text>
             <Slider
-                style={styles.slider}
+                style={{ width: '100%', height: 40 }}
                 minimumValue={1}
                 maximumValue={30}
                 step={1}
                 value={exercise.plannedReps}
                 onValueChange={(value) => updateExercise('plannedReps', value)}
             />
-            <View style={styles.adjustContainer}>
-                <Button
-                    title="-5"
-                    onPress={() =>
-                        updateExercise('plannedReps', Math.max(1, exercise.plannedReps - 5))
-                    }
-                />
-                <Button
-                    title="-"
-                    onPress={() =>
-                        updateExercise('plannedReps', Math.max(1, exercise.plannedReps - 1))
-                    }
-                />
-                <Button
-                    title="+"
-                    onPress={() =>
-                        updateExercise('plannedReps', exercise.plannedReps + 1)
-                    }
-                />
-                <Button
-                    title="+5"
-                    onPress={() =>
-                        updateExercise('plannedReps', exercise.plannedReps + 5)
-                    }
-                />
+            <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginVertical: 10 }}>
+                <Button mode="contained" onPress={() =>
+                    updateExercise('plannedReps', Math.max(1, exercise.plannedReps - 5))
+                }
+                    textColor={theme.colors.onSurface}
+                >
+                    -5
+                </Button>
+                <Button mode="contained" onPress={() =>
+                    updateExercise('plannedReps', Math.max(1, exercise.plannedReps - 1))
+                }
+                    textColor={theme.colors.onSurface}
+                >
+                    -1
+                </Button>
+                <Button mode="contained" onPress={() =>
+                    updateExercise('plannedReps', exercise.plannedReps + 1)
+                }
+                    textColor={theme.colors.onSurface}
+                >
+                    +1
+                </Button>
+                <Button mode="contained" onPress={() =>
+                    updateExercise('plannedReps', exercise.plannedReps + 5)
+                }
+                    textColor={theme.colors.onSurface}
+                >
+                    +5
+                </Button>
             </View>
 
-            <Text style={styles.label}>Planned Weight: {exercise.plannedWeight} kg</Text>
+            <Text style={{ color: theme.colors.onSurface, fontSize: 18, marginVertical: 10 }}>
+                Planned Weight: {exercise.plannedWeight} kg
+            </Text>
             <Slider
-                style={styles.slider}
+                style={{ width: '100%', height: 40 }}
                 minimumValue={0}
                 maximumValue={200}
                 step={1}
                 value={exercise.plannedWeight}
                 onValueChange={(value) => updateExercise('plannedWeight', value)}
             />
-            <View style={styles.adjustContainer}>
-                <Button
-                    title="-20"
-                    onPress={() =>
-                        updateExercise('plannedWeight', Math.max(0, exercise.plannedWeight - 20))
-                    }
-                />
-                <Button
-                    title="-5"
-                    onPress={() =>
-                        updateExercise('plannedWeight', Math.max(0, exercise.plannedWeight - 5))
-                    }
-                />
-                <Button
-                    title="-0.5"
-                    onPress={() =>
-                        updateExercise('plannedWeight', Math.max(0, exercise.plannedWeight - 0.5))
-                    }
-                />
-                <Button
-                    title="+0.5"
-                    onPress={() =>
-                        updateExercise('plannedWeight', exercise.plannedWeight + 0.5)
-                    }
-                />
-                <Button
-                    title="+5"
-                    onPress={() =>
-                        updateExercise('plannedWeight', exercise.plannedWeight + 5)
-                    }
-                />
-                <Button
-                    title="+20"
-                    onPress={() =>
-                        updateExercise('plannedWeight', exercise.plannedWeight + 20)
-                    }
-                />
+            <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginVertical: 10 }}>
+                <Button mode="contained" onPress={() =>
+                    updateExercise('plannedWeight', Math.max(0, exercise.plannedWeight - 20))
+                }
+                    textColor={theme.colors.onSurface}
+                >
+                    -20
+                </Button>
+                <Button mode="contained" onPress={() =>
+                    updateExercise('plannedWeight', Math.max(0, exercise.plannedWeight - 5))
+                }
+                    textColor={theme.colors.onSurface}
+                >
+                    -5
+                </Button>
+                <Button mode="contained" onPress={() =>
+                    updateExercise('plannedWeight', Math.max(0, exercise.plannedWeight - 0.5))
+                }
+                    textColor={theme.colors.onSurface}
+                >
+                    -0.5
+                </Button>
+                <Button mode="contained" onPress={() =>
+                    updateExercise('plannedWeight', exercise.plannedWeight + 0.5)
+                }
+                    textColor={theme.colors.onSurface}
+                >
+                    +0.5
+                </Button>
+                <Button mode="contained" onPress={() =>
+                    updateExercise('plannedWeight', exercise.plannedWeight + 5)
+                }
+                    textColor={theme.colors.onSurface}
+                >
+                    +5
+                </Button>
+                <Button mode="contained" onPress={() =>
+                    updateExercise('plannedWeight', exercise.plannedWeight + 20)
+                }
+                    textColor={theme.colors.onSurface}
+                >
+                    +20
+                </Button>
             </View>
 
-            <View style={styles.buttonContainer}>
-                <Button title="Save" onPress={handleSave} />
-                <Button title="Cancel" onPress={handleCancel} color="#ff5c5c" />
+            <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 20 }}>
+                <Button mode="contained" onPress={handleSave}
+                    textColor={theme.colors.onSurface}
+                >
+                    Save
+                </Button>
+                <Button mode="contained" buttonColor="#ff5c5c" onPress={handleCancel}
+                    textColor={theme.colors.onSurface}
+                >
+                    Cancel
+                </Button>
             </View>
         </View>
     );
 };
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20,
-        backgroundColor: '#fff',
-    },
-    title: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        marginBottom: 20,
-        textAlign: 'center',
-    },
-    label: {
-        fontSize: 18,
-        fontWeight: '600',
-        marginVertical: 10,
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 5,
-        padding: 10,
-        marginBottom: 10,
-    },
-    subTitle: {
-        fontSize: 16,
-        marginVertical: 10,
-    },
-    blobContainer: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        marginBottom: 20,
-    },
-    blob: {
-        backgroundColor: '#eee',
-        paddingVertical: 8,
-        paddingHorizontal: 12,
-        borderRadius: 20,
-        marginRight: 10,
-        marginBottom: 10,
-    },
-    blobSelected: {
-        backgroundColor: '#007bff',
-    },
-    blobText: {
-        color: '#000',
-    },
-    blobTextSelected: {
-        color: '#fff',
-    },
-    slider: {
-        width: '100%',
-        height: 40,
-    },
-    adjustContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        marginVertical: 10,
-    },
-    buttonContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        marginTop: 20,
-    },
-    deletionHeader: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 10,
-    },
-    checkbox: {
-        backgroundColor: '#007bff',
-        color: '#fff',
-        borderRadius: 10,
-        paddingHorizontal: 4,
-        paddingVertical: 2,
-        fontWeight: 'bold',
-        fontSize: 12,
-        position: 'absolute',
-        top: 2,
-        right: 2,
-    },
-});
-
 export default CreateExercise;
+

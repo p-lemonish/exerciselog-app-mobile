@@ -1,10 +1,12 @@
 import React, { useState, useContext } from 'react';
-import { View, Text, TextInput, Button, Alert, TouchableOpacity } from 'react-native';
+import { View, Alert, TouchableOpacity } from 'react-native';
+import { Text, TextInput, Button } from 'react-native-paper';
 import axios from 'axios';
 import { AuthContext } from './AuthContext';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../Navigator';
+import { MyDarkTheme } from '../theme';
 
 export const LoginScreen = () => {
     const [username, setUsername] = useState('');
@@ -34,24 +36,29 @@ export const LoginScreen = () => {
     };
 
     return (
-        <View style={{ flex: 1, padding: 20, justifyContent: 'center' }}>
+        <View style={{ flex: 1, padding: 20, justifyContent: 'center', backgroundColor: MyDarkTheme.colors.background }}>
             <Text style={{ fontSize: 24, marginBottom: 20 }}>Login</Text>
             <TextInput
                 placeholder="Username"
                 value={username}
                 onChangeText={setUsername}
+                mode="outlined"
                 style={{ borderWidth: 1, marginBottom: 10, padding: 8 }}
+                placeholderTextColor="#AAAAAA"
             />
             <TextInput
                 placeholder="Password"
                 value={password}
                 secureTextEntry
                 onChangeText={setPassword}
+                mode="outlined"
                 style={{ borderWidth: 1, marginBottom: 10, padding: 8 }}
             />
-            <Button title="Login" onPress={handleLogin} />
+            <Button mode="contained" onPress={handleLogin}>
+                Login
+            </Button>
             <TouchableOpacity onPress={handleRegister} style={{ marginTop: 20 }}>
-                <Text style={{ color: 'blue', textAlign: 'center' }}>
+                <Text style={{ color: MyDarkTheme.colors.primary, textAlign: 'center' }}>
                     Don't have an account? Register here
                 </Text>
             </TouchableOpacity>
@@ -60,4 +67,3 @@ export const LoginScreen = () => {
 };
 
 export default LoginScreen;
-
