@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
-import { Button } from 'react-native-paper';
+import { View, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { Text, Button, useTheme } from 'react-native-paper';
 import api from '../Service/api';
-import { MyDarkTheme } from '../theme';
 
 interface Workout {
     id: number;
@@ -16,6 +15,7 @@ const WorkoutList = ({ navigation }: any) => {
     const [loading, setLoading] = useState(true);
     const [editMode, setEditMode] = useState(false);
     const [selectedForDeletion, setSelectedForDeletion] = useState<number[]>([]);
+    const theme = useTheme();
 
     useEffect(() => {
         const fetchWorkouts = async () => {
@@ -72,10 +72,10 @@ const WorkoutList = ({ navigation }: any) => {
                     flex: 1,
                     justifyContent: 'center',
                     alignItems: 'center',
-                    backgroundColor: MyDarkTheme.colors.background,
+                    backgroundColor: theme.colors.background,
                 }}
             >
-                <Text style={{ color: MyDarkTheme.colors.text }}>Loading workouts...</Text>
+                <Text >Loading workouts...</Text>
             </View>
         );
     }
@@ -84,7 +84,7 @@ const WorkoutList = ({ navigation }: any) => {
         <ScrollView
             contentContainerStyle={{
                 padding: 20,
-                backgroundColor: MyDarkTheme.colors.background,
+                backgroundColor: theme.colors.background,
                 flexGrow: 1,
             }}
         >
@@ -93,7 +93,6 @@ const WorkoutList = ({ navigation }: any) => {
                     fontSize: 20,
                     marginBottom: 10,
                     textAlign: 'center',
-                    color: MyDarkTheme.colors.text,
                 }}
             >
                 Your workouts – start by pressing a workout to begin.
@@ -115,7 +114,7 @@ const WorkoutList = ({ navigation }: any) => {
                         <TouchableOpacity
                             key={workout.id}
                             style={{
-                                backgroundColor: editMode && isSelected ? MyDarkTheme.colors.primary : '#333',
+                                backgroundColor: editMode && isSelected ? theme.colors.primary : theme.colors.secondary,
                                 paddingVertical: 10,
                                 paddingHorizontal: 12,
                                 borderRadius: 10,
@@ -137,7 +136,7 @@ const WorkoutList = ({ navigation }: any) => {
                                 }
                             }}
                         >
-                            <Text style={{ fontSize: 16, color: isSelected ? '#fff' : MyDarkTheme.colors.text }}>
+                            <Text style={{ fontSize: 16 }}>
                                 {`Workout: ${workout.workoutName}`}
                             </Text>
                             {editMode && isSelected && (
@@ -146,8 +145,8 @@ const WorkoutList = ({ navigation }: any) => {
                                         position: 'absolute',
                                         top: 5,
                                         right: 5,
-                                        backgroundColor: '#fff',
-                                        color: MyDarkTheme.colors.primary,
+                                        backgroundColor: theme.colors.background,
+                                        color: theme.colors.primary,
                                         borderRadius: 10,
                                         paddingHorizontal: 4,
                                         paddingVertical: 2,

@@ -19,7 +19,7 @@ export const HomeScreen = () => {
             }}
         >
             <View style={{ alignItems: 'center' }}>
-                <Text style={{ fontSize: 24, marginBottom: 10, color: theme.colors.onBackground }}>
+                <Text style={{ fontSize: 24, marginBottom: 10 }}>
                     Welcome to the Home Screen!
                 </Text>
             </View>
@@ -29,7 +29,6 @@ export const HomeScreen = () => {
                     mode="contained"
                     style={{ marginVertical: 10 }}
                     onPress={() => navigation.navigate('CreateExercise')}
-                    textColor={theme.colors.onSurface}
                 >
                     Create & Plan Exercises
                 </Button>
@@ -38,7 +37,6 @@ export const HomeScreen = () => {
                     mode="contained"
                     style={{ marginVertical: 10 }}
                     onPress={() => navigation.navigate('PlanWorkout')}
-                    textColor={theme.colors.onSurface}
                 >
                     Plan Your Workout
                 </Button>
@@ -47,7 +45,6 @@ export const HomeScreen = () => {
                     mode="contained"
                     style={{ marginVertical: 10 }}
                     onPress={() => navigation.navigate('WorkoutList')}
-                    textColor={theme.colors.onSurface}
                 >
                     Your Workouts
                 </Button>
@@ -56,7 +53,6 @@ export const HomeScreen = () => {
                     mode="contained"
                     style={{ marginVertical: 10 }}
                     onPress={() => navigation.navigate('TrackProgress')}
-                    textColor={theme.colors.onSurface}
                 >
                     Track Workout Progress
                 </Button>
@@ -65,7 +61,6 @@ export const HomeScreen = () => {
                     mode="contained"
                     style={{ marginVertical: 10 }}
                     onPress={() => navigation.navigate('Profile')}
-                    textColor={theme.colors.onSurface}
                 >
                     Profile
                 </Button>

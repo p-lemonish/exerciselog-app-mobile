@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { Text, TextInput, Button, useTheme } from 'react-native-paper';
 import {
     View,
-    Text,
-    TextInput,
     TouchableOpacity,
-    Button,
     Alert,
     StyleSheet,
     ScrollView,
@@ -29,7 +27,7 @@ interface Exercise {
 
 const EditWorkout = ({ navigation, route }: any) => {
     const { workout } = route.params as { workout: Workout; };
-
+    const theme = useTheme();
     const id = workout.id;
     const [workoutName, setWorkoutName] = useState(workout.workoutName);
     const [workoutNotes, setWorkoutNotes] = useState(workout.workoutNotes);
@@ -92,43 +90,80 @@ const EditWorkout = ({ navigation, route }: any) => {
     }
 
     return (
-        <ScrollView contentContainerStyle={styles.container}>
-            <Text style={styles.title}>Edit Workout</Text>
-            <Text style={styles.label}>Workout Name</Text>
+        <ScrollView
+            contentContainerStyle={{
+                padding: 20,
+                backgroundColor: theme.colors.background,
+                flexGrow: 1,
+            }}>
+            <Text
+                style={{
+                    fontSize: 26,
+                    fontWeight: 'bold',
+                    marginBottom: 20,
+                    textAlign: 'center',
+                }}
+            >
+                Edit Workout
+            </Text>
+
+            <Text style={{ fontSize: 18, marginVertical: 10 }}>
+                Workout Name
+            </Text>
             <TextInput
-                style={styles.input}
                 value={workoutName}
                 onChangeText={setWorkoutName}
-                placeholder="Enter workout name"
+                mode="outlined"
+                style={{ borderWidth: 1, marginBottom: 10, padding: 8 }}
             />
-            <Text style={styles.label}>Workout Notes (optional)</Text>
+
+            <Text style={{ fontSize: 18, marginVertical: 10 }}>
+                Workout Notes (optional)
+            </Text>
             <TextInput
-                style={[styles.input, { height: 80 }]}
+                placeholder="Enter any notes here"
+                multiline
                 value={workoutNotes}
                 onChangeText={setWorkoutNotes}
-                placeholder="Enter workout notes"
-                multiline
+                mode="outlined"
+                style={{ borderWidth: 1, marginBottom: 10, padding: 8, height: 80 }}
             />
-            <Text style={styles.label}>Select Planned Exercises:</Text>
-            <View style={styles.exerciseList}>
+            <Text style={{ fontSize: 18, marginVertical: 10 }}>
+                Select Planned Exercises:
+            </Text>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
                 {plannedExercises.map((ex) => {
                     const isSelected = selectedExerciseIds.includes(ex.id);
                     return (
                         <TouchableOpacity
                             key={ex.id}
-                            style={[styles.exerciseItem, isSelected && styles.exerciseItemSelected]}
                             onPress={() => toggleExerciseSelection(ex.id)}
+                            style={{
+                                backgroundColor: isSelected ? theme.colors.primary : theme.colors.secondary,
+                                paddingVertical: 8,
+                                paddingHorizontal: 12,
+                                borderRadius: 20,
+                                marginRight: 10,
+                                marginBottom: 10,
+                            }}
                         >
-                            <Text style={[styles.exerciseText, isSelected && styles.exerciseTextSelected]}>
+                            <Text >
                                 {`${ex.exerciseName} ${ex.plannedWeight}kg @ ${ex.plannedSets}x${ex.plannedReps}`}
                             </Text>
                         </TouchableOpacity>
                     );
                 })}
             </View>
-            <View style={styles.buttonContainer}>
-                <Button title="Save Changes" onPress={handleSaveChanges} />
-                <Button title="Cancel" onPress={() => navigation.goBack()} color="#ff5c5c" />
+
+            <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 20 }}>
+                <Button mode="contained" onPress={handleSaveChanges}
+                >
+                    Save Changes
+                </Button>
+                <Button mode="contained" buttonColor="#ff5c5c" onPress={() => navigation.goBack()}
+                >
+                    Cancel
+                </Button>
             </View>
         </ScrollView>
     );
@@ -137,7 +172,6 @@ const EditWorkout = ({ navigation, route }: any) => {
 const styles = StyleSheet.create({
     container: {
         padding: 20,
-        backgroundColor: '#fff',
         flexGrow: 1,
     },
     center: {
@@ -158,7 +192,6 @@ const styles = StyleSheet.create({
     },
     input: {
         borderWidth: 1,
-        borderColor: '#ccc',
         borderRadius: 5,
         padding: 10,
         marginBottom: 10,
@@ -168,21 +201,11 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
     },
     exerciseItem: {
-        backgroundColor: '#eee',
         paddingVertical: 8,
         paddingHorizontal: 12,
         borderRadius: 20,
         marginRight: 10,
         marginBottom: 10,
-    },
-    exerciseItemSelected: {
-        backgroundColor: '#007bff',
-    },
-    exerciseText: {
-        color: '#000',
-    },
-    exerciseTextSelected: {
-        color: '#fff',
     },
     buttonContainer: {
         flexDirection: 'row',

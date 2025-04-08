@@ -1,8 +1,8 @@
 
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Alert } from 'react-native';
+import { View, FlatList, TouchableOpacity, Alert } from 'react-native';
 import api from '../Service/api';
-import { MyDarkTheme } from '../theme';
+import { Text, useTheme } from 'react-native-paper';
 
 interface SetResult {
     setNumber: number;
@@ -32,6 +32,7 @@ interface ExerciseLogSummary {
 const TrackProgress = ({ navigation }: any) => {
     const [logSummaries, setLogSummaries] = useState<ExerciseLogSummary[]>([]);
     const [loading, setLoading] = useState(true);
+    const theme = useTheme();
 
     useEffect(() => {
         const fetchLogs = async () => {
@@ -72,27 +73,26 @@ const TrackProgress = ({ navigation }: any) => {
                 flexDirection: 'row',
                 paddingVertical: 10,
                 borderBottomWidth: 1,
-                borderBottomColor: '#eee',
             }}
             onPress={() => navigation.navigate('TrackProgressDetail', { log: item.fullLog })}
         >
             <Text
-                style={{ flex: 1, color: MyDarkTheme.colors.text }}
+                style={{ flex: 1 }}
             >
                 {item.date}
             </Text>
             <Text
-                style={{ flex: 2, color: MyDarkTheme.colors.text }}
+                style={{ flex: 2 }}
             >
                 {item.exerciseName}
             </Text>
             <Text
-                style={{ flex: 1, textAlign: 'center', color: MyDarkTheme.colors.text }}
+                style={{ flex: 1, textAlign: 'center' }}
             >
                 {item.repsSummary}
             </Text>
             <Text
-                style={{ flex: 1, textAlign: 'center', color: MyDarkTheme.colors.text }}
+                style={{ flex: 1, textAlign: 'center' }}
             >
                 {item.weightSummary}
             </Text>
@@ -106,10 +106,10 @@ const TrackProgress = ({ navigation }: any) => {
                     flex: 1,
                     justifyContent: 'center',
                     alignItems: 'center',
-                    backgroundColor: MyDarkTheme.colors.background,
+                    backgroundColor: theme.colors.background,
                 }}
             >
-                <Text style={{ color: MyDarkTheme.colors.text }}>Loading progress logs...</Text>
+                <Text >Loading progress logs...</Text>
             </View>
         );
     }
@@ -119,7 +119,7 @@ const TrackProgress = ({ navigation }: any) => {
             style={{
                 flex: 1,
                 padding: 10,
-                backgroundColor: MyDarkTheme.colors.background,
+                backgroundColor: theme.colors.background,
             }}
         >
             <Text
@@ -127,7 +127,6 @@ const TrackProgress = ({ navigation }: any) => {
                     fontSize: 20,
                     marginBottom: 10,
                     textAlign: 'center',
-                    color: MyDarkTheme.colors.text,
                 }}
             >
                 Your Exercise Logs – press an entry for more details.
@@ -140,16 +139,16 @@ const TrackProgress = ({ navigation }: any) => {
                     paddingVertical: 5,
                 }}
             >
-                <Text style={{ flex: 1, fontWeight: 'bold', fontSize: 16, color: MyDarkTheme.colors.text }}>
+                <Text style={{ flex: 1, fontWeight: 'bold', fontSize: 16 }}>
                     Date
                 </Text>
-                <Text style={{ flex: 2, fontWeight: 'bold', fontSize: 16, color: MyDarkTheme.colors.text }}>
+                <Text style={{ flex: 2, fontWeight: 'bold', fontSize: 16 }}>
                     Exercise
                 </Text>
-                <Text style={{ flex: 1, textAlign: 'center', fontWeight: 'bold', fontSize: 16, color: MyDarkTheme.colors.text }}>
+                <Text style={{ flex: 1, textAlign: 'center', fontWeight: 'bold', fontSize: 16 }}>
                     Reps
                 </Text>
-                <Text style={{ flex: 1, textAlign: 'center', fontWeight: 'bold', fontSize: 16, color: MyDarkTheme.colors.text }}>
+                <Text style={{ flex: 1, textAlign: 'center', fontWeight: 'bold', fontSize: 16 }}>
                     Max Weight
                 </Text>
             </View>
@@ -158,7 +157,7 @@ const TrackProgress = ({ navigation }: any) => {
                 keyExtractor={(item, index) => item.id.toString() + '-' + index.toString()}
                 renderItem={renderItem}
                 ListEmptyComponent={
-                    <Text style={{ color: MyDarkTheme.colors.text }}>No progress logs found.</Text>
+                    <Text >No progress logs found.</Text>
                 }
             />
         </View>

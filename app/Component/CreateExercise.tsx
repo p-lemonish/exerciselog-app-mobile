@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Alert, TouchableOpacity, Text } from 'react-native';
-import { Button, TextInput, useTheme } from 'react-native-paper';
+import { ScrollView, View, Alert, TouchableOpacity } from 'react-native';
+import { Text, Button, TextInput, useTheme } from 'react-native-paper';
 import Slider from '@react-native-community/slider';
 import api from '../Service/api';
 import { AuthContext } from '../Auth/AuthContext';
@@ -134,14 +134,14 @@ const CreateExercise = ({ navigation }: any) => {
     ];
 
     return (
-        <View
-            style={{
-                flex: 1,
+        <ScrollView
+            contentContainerStyle={{
                 padding: 20,
                 backgroundColor: theme.colors.background,
+                flexGrow: 1,
             }}
         >
-            <Text style={{ color: theme.colors.onSurface, fontSize: 18, marginBottom: 10 }}>
+            <Text style={{ fontSize: 18, marginBottom: 10 }}>
                 Exercise Name
             </Text>
             <TextInput
@@ -152,18 +152,18 @@ const CreateExercise = ({ navigation }: any) => {
                 style={{ borderWidth: 1, marginBottom: 10, padding: 8 }}
             />
 
-            <Text style={{ color: theme.colors.onSurface, fontSize: 16, marginVertical: 10 }}>
+            <Text style={{ fontSize: 16, marginVertical: 10 }}>
                 Or choose from your exercises & common ones:
             </Text>
 
             {userExercises.length > 0 && (
                 <View>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
-                        <Button mode="contained" textColor={theme.colors.onSurface} onPress={toggleDeletionMode}>
+                        <Button mode="contained" onPress={toggleDeletionMode}>
                             {deletionMode ? 'Cancel Edit' : 'Edit'}
                         </Button>
                         {deletionMode && selectedForDeletion.length > 0 && (
-                            <Button mode="contained" textColor={theme.colors.onSurface} onPress={handleDeleteSome}>
+                            <Button mode="contained" onPress={handleDeleteSome}>
                                 Delete
                             </Button>
                         )}
@@ -187,9 +187,6 @@ const CreateExercise = ({ navigation }: any) => {
                                         onPress={() => toggleSelection(ex.id)}
                                     >
                                         <Text
-                                            style={{
-                                                color: theme.colors.onSurface,
-                                            }}
                                         >
                                             {`${ex.exerciseName} ${ex.plannedSets}x${ex.plannedReps}@${ex.plannedWeight}kg`}
                                         </Text>
@@ -217,7 +214,7 @@ const CreateExercise = ({ navigation }: any) => {
                             }}
                             onPress={() => updateExercise('exerciseName', name)}
                         >
-                            <Text style={{ color: theme.colors.onSurface }}>
+                            <Text >
                                 {name}
                             </Text>
                         </TouchableOpacity>
@@ -225,7 +222,7 @@ const CreateExercise = ({ navigation }: any) => {
                 })}
             </View>
 
-            <Text style={{ color: theme.colors.onSurface, fontSize: 18, marginVertical: 10 }}>
+            <Text style={{ fontSize: 18, marginVertical: 10 }}>
                 Planned Sets: {exercise.plannedSets}
             </Text>
             <Slider
@@ -234,26 +231,26 @@ const CreateExercise = ({ navigation }: any) => {
                 maximumValue={10}
                 step={1}
                 value={exercise.plannedSets}
+                thumbTintColor={theme.colors.primary}
+                minimumTrackTintColor={theme.colors.primary}
                 onValueChange={(value) => updateExercise('plannedSets', value)}
             />
             <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginVertical: 10 }}>
                 <Button mode="contained" onPress={() =>
                     updateExercise('plannedSets', Math.max(1, exercise.plannedSets - 1))
                 }
-                    textColor={theme.colors.onSurface}
                 >
                     -1
                 </Button>
                 <Button mode="contained" onPress={() =>
                     updateExercise('plannedSets', exercise.plannedSets + 1)
                 }
-                    textColor={theme.colors.onSurface}
                 >
                     +1
                 </Button>
             </View>
 
-            <Text style={{ color: theme.colors.onSurface, fontSize: 18, marginVertical: 10 }}>
+            <Text style={{ fontSize: 18, marginVertical: 10 }}>
                 Planned Reps: {exercise.plannedReps}
             </Text>
             <Slider
@@ -262,40 +259,38 @@ const CreateExercise = ({ navigation }: any) => {
                 maximumValue={30}
                 step={1}
                 value={exercise.plannedReps}
+                thumbTintColor={theme.colors.primary}
+                minimumTrackTintColor={theme.colors.primary}
                 onValueChange={(value) => updateExercise('plannedReps', value)}
             />
             <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginVertical: 10 }}>
                 <Button mode="contained" onPress={() =>
                     updateExercise('plannedReps', Math.max(1, exercise.plannedReps - 5))
                 }
-                    textColor={theme.colors.onSurface}
                 >
                     -5
                 </Button>
                 <Button mode="contained" onPress={() =>
                     updateExercise('plannedReps', Math.max(1, exercise.plannedReps - 1))
                 }
-                    textColor={theme.colors.onSurface}
                 >
                     -1
                 </Button>
                 <Button mode="contained" onPress={() =>
                     updateExercise('plannedReps', exercise.plannedReps + 1)
                 }
-                    textColor={theme.colors.onSurface}
                 >
                     +1
                 </Button>
                 <Button mode="contained" onPress={() =>
                     updateExercise('plannedReps', exercise.plannedReps + 5)
                 }
-                    textColor={theme.colors.onSurface}
                 >
                     +5
                 </Button>
             </View>
 
-            <Text style={{ color: theme.colors.onSurface, fontSize: 18, marginVertical: 10 }}>
+            <Text style={{ fontSize: 18, marginVertical: 10 }}>
                 Planned Weight: {exercise.plannedWeight} kg
             </Text>
             <Slider
@@ -304,48 +299,46 @@ const CreateExercise = ({ navigation }: any) => {
                 maximumValue={200}
                 step={1}
                 value={exercise.plannedWeight}
+                thumbTintColor={theme.colors.primary}
+                minimumTrackTintColor={theme.colors.primary}
                 onValueChange={(value) => updateExercise('plannedWeight', value)}
             />
             <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginVertical: 10 }}>
                 <Button mode="contained" onPress={() =>
-                    updateExercise('plannedWeight', Math.max(0, exercise.plannedWeight - 20))
-                }
-                    textColor={theme.colors.onSurface}
-                >
-                    -20
-                </Button>
-                <Button mode="contained" onPress={() =>
-                    updateExercise('plannedWeight', Math.max(0, exercise.plannedWeight - 5))
-                }
-                    textColor={theme.colors.onSurface}
-                >
-                    -5
-                </Button>
-                <Button mode="contained" onPress={() =>
                     updateExercise('plannedWeight', Math.max(0, exercise.plannedWeight - 0.5))
                 }
-                    textColor={theme.colors.onSurface}
                 >
                     -0.5
                 </Button>
                 <Button mode="contained" onPress={() =>
+                    updateExercise('plannedWeight', Math.max(0, exercise.plannedWeight - 5))
+                }
+                >
+                    -5
+                </Button>
+                <Button mode="contained" onPress={() =>
+                    updateExercise('plannedWeight', Math.max(0, exercise.plannedWeight - 20))
+                }
+                >
+                    -20
+                </Button>
+            </View>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                <Button mode="contained" onPress={() =>
                     updateExercise('plannedWeight', exercise.plannedWeight + 0.5)
                 }
-                    textColor={theme.colors.onSurface}
                 >
                     +0.5
                 </Button>
                 <Button mode="contained" onPress={() =>
                     updateExercise('plannedWeight', exercise.plannedWeight + 5)
                 }
-                    textColor={theme.colors.onSurface}
                 >
                     +5
                 </Button>
                 <Button mode="contained" onPress={() =>
                     updateExercise('plannedWeight', exercise.plannedWeight + 20)
                 }
-                    textColor={theme.colors.onSurface}
                 >
                     +20
                 </Button>
@@ -353,17 +346,15 @@ const CreateExercise = ({ navigation }: any) => {
 
             <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 20 }}>
                 <Button mode="contained" onPress={handleSave}
-                    textColor={theme.colors.onSurface}
                 >
                     Save
                 </Button>
                 <Button mode="contained" buttonColor="#ff5c5c" onPress={handleCancel}
-                    textColor={theme.colors.onSurface}
                 >
                     Cancel
                 </Button>
             </View>
-        </View>
+        </ScrollView>
     );
 };
 

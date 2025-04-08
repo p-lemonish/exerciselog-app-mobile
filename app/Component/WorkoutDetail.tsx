@@ -1,17 +1,17 @@
 import React from 'react';
-import { ScrollView, Text, View } from 'react-native';
-import { Button } from 'react-native-paper';
-import { MyDarkTheme } from '../theme';
+import { ScrollView, View } from 'react-native';
+import { Text, Button, useTheme } from 'react-native-paper';
 
 const WorkoutDetail = ({ navigation, route }: any) => {
     const { workout } = route.params;
     const workoutId = workout.id;
+    const theme = useTheme();
 
     return (
         <ScrollView
             contentContainerStyle={{
                 padding: 20,
-                backgroundColor: MyDarkTheme.colors.background,
+                backgroundColor: theme.colors.background,
                 flexGrow: 1,
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -22,7 +22,6 @@ const WorkoutDetail = ({ navigation, route }: any) => {
                     fontSize: 26,
                     fontWeight: 'bold',
                     marginBottom: 20,
-                    color: MyDarkTheme.colors.text,
                 }}
             >
                 {`Workout: ${workout.workoutName}`}
@@ -32,7 +31,6 @@ const WorkoutDetail = ({ navigation, route }: any) => {
                     fontSize: 18,
                     marginVertical: 5,
                     textAlign: 'center',
-                    color: MyDarkTheme.colors.text,
                 }}
             >
                 {`Notes: ${workout.workoutNotes || 'None'}`}
@@ -42,7 +40,6 @@ const WorkoutDetail = ({ navigation, route }: any) => {
                     fontSize: 18,
                     marginVertical: 5,
                     textAlign: 'center',
-                    color: MyDarkTheme.colors.text,
                 }}
             >
                 {`Exercises: ${workout.selectedExerciseIds.join(', ')}`}

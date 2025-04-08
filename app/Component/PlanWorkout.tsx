@@ -88,7 +88,7 @@ const PlanWorkout = ({ navigation }: any) => {
                     backgroundColor: theme.colors.background,
                 }}
             >
-                <Text style={{ color: theme.colors.onBackground }}>Loading planned exercises...</Text>
+                <Text >Loading planned exercises...</Text>
             </View>
         );
     }
@@ -106,14 +106,13 @@ const PlanWorkout = ({ navigation }: any) => {
                     fontSize: 26,
                     fontWeight: 'bold',
                     marginBottom: 20,
-                    color: theme.colors.onBackground,
                     textAlign: 'center',
                 }}
             >
                 Plan Your Workout
             </Text>
 
-            <Text style={{ fontSize: 18, marginVertical: 10, color: theme.colors.onBackground }}>
+            <Text style={{ fontSize: 18, marginVertical: 10 }}>
                 Workout Name
             </Text>
             <TextInput
@@ -124,7 +123,7 @@ const PlanWorkout = ({ navigation }: any) => {
                 style={{ borderWidth: 1, marginBottom: 10, padding: 8 }}
             />
 
-            <Text style={{ fontSize: 18, marginVertical: 10, color: theme.colors.onBackground }}>
+            <Text style={{ fontSize: 18, marginVertical: 10 }}>
                 Workout Notes (optional)
             </Text>
             <TextInput
@@ -136,7 +135,7 @@ const PlanWorkout = ({ navigation }: any) => {
                 style={{ borderWidth: 1, marginBottom: 10, padding: 8, height: 80 }}
             />
 
-            <Text style={{ fontSize: 18, marginVertical: 10, color: theme.colors.onBackground }}>
+            <Text style={{ fontSize: 18, marginVertical: 10 }}>
                 Select Planned Exercises:
             </Text>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
@@ -155,7 +154,7 @@ const PlanWorkout = ({ navigation }: any) => {
                                 marginBottom: 10,
                             }}
                         >
-                            <Text style={{ color: theme.colors.onBackground }}>
+                            <Text >
                                 {`${ex.exerciseName} ${ex.plannedWeight}kg @ ${ex.plannedSets}x${ex.plannedReps}`}
                             </Text>
                         </TouchableOpacity>
@@ -163,15 +162,12 @@ const PlanWorkout = ({ navigation }: any) => {
                 })}
             </View>
 
-            {/* Updated Buttons */}
             <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 20 }}>
                 <Button mode="contained" onPress={handleSaveWorkout}
-                    textColor={theme.colors.onSurface}
                 >
                     Save Workout
                 </Button>
                 <Button mode="contained" buttonColor="#ff5c5c" onPress={() => navigation.goBack()}
-                    textColor={theme.colors.onSurface}
                 >
                     Cancel
                 </Button>

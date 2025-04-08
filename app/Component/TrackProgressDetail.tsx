@@ -1,19 +1,20 @@
 import React from 'react';
-import { ScrollView, Text } from 'react-native';
+import { ScrollView } from 'react-native';
 import { RootStackParamList } from '../Navigator';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { MyDarkTheme } from '../theme';
+import { Text, useTheme } from 'react-native-paper';
 
 type TrackProgressDetailProps = NativeStackScreenProps<RootStackParamList, 'TrackProgressDetail'>;
 
 const TrackProgressDetail: React.FC<TrackProgressDetailProps> = ({ route }) => {
+    const theme = useTheme();
     const { log, date } = route.params;
 
     return (
         <ScrollView
             contentContainerStyle={{
                 padding: 20,
-                backgroundColor: MyDarkTheme.colors.background,
+                backgroundColor: theme.colors.background,
                 flexGrow: 1,
             }}
         >
@@ -23,7 +24,6 @@ const TrackProgressDetail: React.FC<TrackProgressDetailProps> = ({ route }) => {
                     fontWeight: 'bold',
                     marginBottom: 10,
                     textAlign: 'center',
-                    color: MyDarkTheme.colors.text,
                 }}
             >
                 {log.exerciseName}
@@ -34,7 +34,6 @@ const TrackProgressDetail: React.FC<TrackProgressDetailProps> = ({ route }) => {
                         fontSize: 16,
                         textAlign: 'center',
                         marginBottom: 20,
-                        color: MyDarkTheme.colors.text,
                     }}
                 >
                     {date}
@@ -46,10 +45,7 @@ const TrackProgressDetail: React.FC<TrackProgressDetailProps> = ({ route }) => {
                     key={set.setNumber}
                     style={{
                         paddingVertical: 8,
-                        borderBottomWidth: 1,
-                        borderBottomColor: '#ccc',
                         fontSize: 18,
-                        color: MyDarkTheme.colors.text,
                     }}
                 >
                     {`Set ${set.setNumber}: ${set.reps} reps, ${set.weight} kg`}
@@ -62,7 +58,6 @@ const TrackProgressDetail: React.FC<TrackProgressDetailProps> = ({ route }) => {
                     fontWeight: '600',
                     marginTop: 20,
                     marginBottom: 5,
-                    color: MyDarkTheme.colors.text,
                 }}
             >
                 Exercise Notes:
@@ -71,7 +66,6 @@ const TrackProgressDetail: React.FC<TrackProgressDetailProps> = ({ route }) => {
                 style={{
                     fontSize: 16,
                     lineHeight: 22,
-                    color: MyDarkTheme.colors.text,
                 }}
             >
                 {log.notes || 'No notes provided.'}

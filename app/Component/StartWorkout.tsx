@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, Alert, ScrollView } from 'react-native';
-import { Button } from 'react-native-paper';
+import { View, TouchableOpacity, Alert, ScrollView } from 'react-native';
+import { Text, Button, useTheme } from 'react-native-paper';
 import api from '../Service/api';
-import { MyDarkTheme } from '../theme';
 
 interface PlannedExercise {
     id: number;
@@ -42,6 +41,7 @@ interface CompletedWorkout {
 }
 
 const StartWorkout = ({ navigation, route }: any) => {
+    const theme = useTheme();
     const { workoutId } = route.params as { workoutId: number; };
     const [setResults, setSetResults] = useState<Record<number, SetResult[]>>({});
     const [plannedExercises, setPlannedExercises] = useState<PlannedExercise[]>([]);
@@ -148,12 +148,12 @@ const StartWorkout = ({ navigation, route }: any) => {
                     padding: 10,
                 }}
             >
-                <Text style={{ fontSize: 16, marginBottom: 5, color: MyDarkTheme.colors.text }}>
+                <Text style={{ fontSize: 16, marginBottom: 5 }}>
                     {`Set ${setIndex + 1}:`}
                 </Text>
 
                 <View style={{ marginVertical: 5 }}>
-                    <Text style={{ fontSize: 14, marginBottom: 3, color: MyDarkTheme.colors.text }}>
+                    <Text style={{ fontSize: 14, marginBottom: 3 }}>
                         Reps: {setResult.reps}
                     </Text>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginVertical: 5 }}>
@@ -189,7 +189,7 @@ const StartWorkout = ({ navigation, route }: any) => {
                 </View>
 
                 <View style={{ marginVertical: 5 }}>
-                    <Text style={{ fontSize: 14, marginBottom: 3, color: MyDarkTheme.colors.text }}>
+                    <Text style={{ fontSize: 14, marginBottom: 3 }}>
                         Weight (kg): {setResult.weight}
                     </Text>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginVertical: 5 }}>
@@ -250,7 +250,7 @@ const StartWorkout = ({ navigation, route }: any) => {
                     style={{
                         marginTop: 10,
                         alignSelf: 'center',
-                        backgroundColor: setResult.completed ? MyDarkTheme.colors.primary : '#444',
+                        backgroundColor: setResult.completed ? theme.colors.primary : '#444',
                         paddingVertical: 5,
                         paddingHorizontal: 10,
                         borderRadius: 5,
@@ -269,7 +269,7 @@ const StartWorkout = ({ navigation, route }: any) => {
         <ScrollView
             contentContainerStyle={{
                 padding: 20,
-                backgroundColor: MyDarkTheme.colors.background,
+                backgroundColor: theme.colors.background,
                 flexGrow: 1,
             }}
         >
@@ -279,7 +279,6 @@ const StartWorkout = ({ navigation, route }: any) => {
                         fontSize: 26,
                         fontWeight: 'bold',
                         marginBottom: 20,
-                        color: MyDarkTheme.colors.text,
                         textAlign: 'center',
                     }}
                 >
@@ -301,7 +300,6 @@ const StartWorkout = ({ navigation, route }: any) => {
                             fontSize: 22,
                             fontWeight: '600',
                             marginBottom: 10,
-                            color: MyDarkTheme.colors.text,
                         }}
                     >
                         {ex.exerciseName}

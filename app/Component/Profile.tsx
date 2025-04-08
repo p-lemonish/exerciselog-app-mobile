@@ -1,14 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Alert, ActivityIndicator } from 'react-native';
-import { Text, TextInput, Button } from 'react-native-paper';
+import { Text, TextInput, Button, useTheme } from 'react-native-paper';
 import { AuthContext } from '../Auth/AuthContext';
 import api from '../Service/api';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../Navigator';
-import { MyDarkTheme } from '../theme';
 
 const Profile = () => {
+    const theme = useTheme();
     const authContext = useContext(AuthContext);
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
     const [userData, setUserData] = useState({
@@ -87,11 +87,11 @@ const Profile = () => {
                     flex: 1,
                     justifyContent: 'center',
                     alignItems: 'center',
-                    backgroundColor: MyDarkTheme.colors.background,
+                    backgroundColor: theme.colors.background,
                 }}
             >
                 <ActivityIndicator size="large" color="#aaa" />
-                <Text style={{ color: MyDarkTheme.colors.text }}>Loading...</Text>
+                <Text >Loading...</Text>
             </View>
         );
     }
@@ -101,7 +101,7 @@ const Profile = () => {
             style={{
                 flex: 1,
                 padding: 20,
-                backgroundColor: MyDarkTheme.colors.background,
+                backgroundColor: theme.colors.background,
             }}
         >
             <Text
@@ -110,33 +110,32 @@ const Profile = () => {
                     fontWeight: 'bold',
                     marginBottom: 20,
                     textAlign: 'center',
-                    color: MyDarkTheme.colors.text,
                 }}
             >
                 Your Profile
             </Text>
 
             <View style={{ flexDirection: 'row', marginBottom: 10, alignItems: 'center' }}>
-                <Text style={{ fontSize: 16, fontWeight: 'bold', width: 80, color: MyDarkTheme.colors.text }}>
+                <Text style={{ fontSize: 16, fontWeight: 'bold', width: 80 }}>
                     Name:
                 </Text>
-                <Text style={{ fontSize: 16, flexShrink: 1, color: MyDarkTheme.colors.text }}>
+                <Text style={{ fontSize: 16, flexShrink: 1 }}>
                     {userData.username || 'N/A'}
                 </Text>
             </View>
             <View style={{ flexDirection: 'row', marginBottom: 10, alignItems: 'center' }}>
-                <Text style={{ fontSize: 16, fontWeight: 'bold', width: 80, color: MyDarkTheme.colors.text }}>
+                <Text style={{ fontSize: 16, fontWeight: 'bold', width: 80 }}>
                     Email:
                 </Text>
-                <Text style={{ fontSize: 16, flexShrink: 1, color: MyDarkTheme.colors.text }}>
+                <Text style={{ fontSize: 16, flexShrink: 1 }}>
                     {userData.email || 'N/A'}
                 </Text>
             </View>
             <View style={{ flexDirection: 'row', marginBottom: 10, alignItems: 'center' }}>
-                <Text style={{ fontSize: 16, fontWeight: 'bold', width: 80, color: MyDarkTheme.colors.text }}>
+                <Text style={{ fontSize: 16, fontWeight: 'bold', width: 80 }}>
                     Role:
                 </Text>
-                <Text style={{ fontSize: 16, flexShrink: 1, color: MyDarkTheme.colors.text }}>
+                <Text style={{ fontSize: 16, flexShrink: 1 }}>
                     {userData.roleName || 'N/A'}
                 </Text>
             </View>
@@ -147,7 +146,6 @@ const Profile = () => {
                     fontWeight: 'bold',
                     marginVertical: 20,
                     textAlign: 'center',
-                    color: MyDarkTheme.colors.text,
                 }}
             >
                 Change Password
@@ -159,7 +157,6 @@ const Profile = () => {
                 onChangeText={setCurrentPassword}
                 mode="outlined"
                 style={{ borderWidth: 1, marginBottom: 10, padding: 8 }}
-                placeholderTextColor="#AAAAAA"
             />
             <TextInput
                 placeholder="New Password"
@@ -168,7 +165,6 @@ const Profile = () => {
                 onChangeText={setNewPassword}
                 mode="outlined"
                 style={{ borderWidth: 1, marginBottom: 10, padding: 8 }}
-                placeholderTextColor="#AAAAAA"
             />
             <TextInput
                 placeholder="Confirm New Password"
@@ -177,7 +173,6 @@ const Profile = () => {
                 onChangeText={setConfirmPassword}
                 mode="outlined"
                 style={{ borderWidth: 1, marginBottom: 10, padding: 8 }}
-                placeholderTextColor="#AAAAAA"
             />
             <Button mode="contained" onPress={handleChangePassword} disabled={isUpdating}>
                 {isUpdating ? 'Updating...' : 'Change Password'}
