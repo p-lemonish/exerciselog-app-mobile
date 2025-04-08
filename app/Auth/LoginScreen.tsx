@@ -1,14 +1,14 @@
 import React, { useState, useContext } from 'react';
 import { View, Alert, TouchableOpacity } from 'react-native';
-import { Text, TextInput, Button } from 'react-native-paper';
+import { Text, TextInput, Button, useTheme } from 'react-native-paper';
 import axios from 'axios';
 import { AuthContext } from './AuthContext';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../Navigator';
-import { MyDarkTheme } from '../theme';
 
 export const LoginScreen = () => {
+    const theme = useTheme();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const authContext = useContext(AuthContext);
@@ -36,7 +36,7 @@ export const LoginScreen = () => {
     };
 
     return (
-        <View style={{ flex: 1, padding: 20, justifyContent: 'center', backgroundColor: MyDarkTheme.colors.background }}>
+        <View style={{ flex: 1, padding: 20, justifyContent: 'center', backgroundColor: theme.colors.background }}>
             <Text style={{ fontSize: 24, marginBottom: 20 }}>Login</Text>
             <TextInput
                 placeholder="Username"
@@ -44,7 +44,6 @@ export const LoginScreen = () => {
                 onChangeText={setUsername}
                 mode="outlined"
                 style={{ borderWidth: 1, marginBottom: 10, padding: 8 }}
-                placeholderTextColor="#AAAAAA"
             />
             <TextInput
                 placeholder="Password"
@@ -58,7 +57,7 @@ export const LoginScreen = () => {
                 Login
             </Button>
             <TouchableOpacity onPress={handleRegister} style={{ marginTop: 20 }}>
-                <Text style={{ color: MyDarkTheme.colors.primary, textAlign: 'center' }}>
+                <Text style={{ color: theme.colors.primary, textAlign: 'center' }}>
                     Don't have an account? Register here
                 </Text>
             </TouchableOpacity>

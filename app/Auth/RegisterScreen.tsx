@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { View, Alert } from 'react-native';
-import { Text, TextInput, Button } from 'react-native-paper';
+import { Text, TextInput, Button, useTheme } from 'react-native-paper';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../Navigator';
-import { MyDarkTheme } from '../theme';
 
 const RegisterScreen = () => {
+    const theme = useTheme();
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -44,10 +44,10 @@ const RegisterScreen = () => {
                 flex: 1,
                 padding: 20,
                 justifyContent: 'center',
-                backgroundColor: MyDarkTheme.colors.background,
+                backgroundColor: theme.colors.background,
             }}
         >
-            <Text style={{ fontSize: 24, marginBottom: 20, color: MyDarkTheme.colors.text }}>
+            <Text style={{ fontSize: 24, marginBottom: 20 }}>
                 Register
             </Text>
             <TextInput
@@ -56,7 +56,6 @@ const RegisterScreen = () => {
                 onChangeText={setUsername}
                 mode="outlined"
                 style={{ borderWidth: 1, marginBottom: 10, padding: 8 }}
-                placeholderTextColor="#AAAAAA"
             />
             <TextInput
                 placeholder="Email"
@@ -65,7 +64,6 @@ const RegisterScreen = () => {
                 mode="outlined"
                 keyboardType="email-address"
                 style={{ borderWidth: 1, marginBottom: 10, padding: 8 }}
-                placeholderTextColor="#AAAAAA"
             />
             <TextInput
                 placeholder="Password"
@@ -74,7 +72,6 @@ const RegisterScreen = () => {
                 mode="outlined"
                 secureTextEntry
                 style={{ borderWidth: 1, marginBottom: 10, padding: 8 }}
-                placeholderTextColor="#AAAAAA"
             />
             <TextInput
                 placeholder="Confirm Password"
@@ -83,7 +80,6 @@ const RegisterScreen = () => {
                 mode="outlined"
                 secureTextEntry
                 style={{ borderWidth: 1, marginBottom: 10, padding: 8 }}
-                placeholderTextColor="#AAAAAA"
             />
 
             <Button mode="contained" onPress={handleRegister}>
@@ -93,7 +89,6 @@ const RegisterScreen = () => {
             <View style={{ marginTop: 20 }}>
                 <Button
                     mode="text"
-                    textColor={MyDarkTheme.colors.primary}
                     onPress={() => navigation.navigate('Login')}
                 >
                     Back to Login
